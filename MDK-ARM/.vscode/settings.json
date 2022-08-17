@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "malloc.h": "c",
+        "h750xbh6.h": "c",
+        "lcd.h": "c",
+        "stm32h7xx_it.h": "c",
+        "ltdc.h": "c",
+        "audioplay.h": "c",
+        "stm32h7xx.h": "c",
+        "stm32h750xx.h": "c",
+        "stm32h7xx_hal.h": "c",
+        "stm32h7xx_hal_conf.h": "c"
+    }
+}
