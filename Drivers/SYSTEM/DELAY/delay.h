@@ -1,24 +1,19 @@
-#ifndef _DELAY_H
-#define _DELAY_H
-#include <sys.h>	  
-//////////////////////////////////////////////////////////////////////////////////  
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32H7开发板
-//使用SysTick的普通计数模式对延迟进行管理(支持ucosii)
-//包括delay_us,delay_ms
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2017/6/3
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved
-//********************************************************************************
-//修改说明
-////////////////////////////////////////////////////////////////////////////////// 
+#ifndef __DELAY_H
+#define __DELAY_H
+#include <sys.h>
+
+/**
+ * https://github.com/XuanSama02
+ * @auther:  XuanSama02
+ * @date:    2022/08/18
+ * @brif:    北极星开发板delay函数实现
+ * @version:
+ * 1.0：实现了北极星开发板毫秒与微秒两种延时函数，支持UCOSII与UCOSIII，FreeRTOS需要进行进一步移植
+ *      没有使用HAL_Delay,如果中断优先级配置不合适,HAL_Delay容易进入死循环
+ */
 
 void delay_init(u16 SYSCLK);
 void delay_ms(u16 nms);
 void delay_us(u32 nus);
-#endif
 
+#endif

@@ -1,18 +1,14 @@
-#include "h750xbh6.h"
-//ALIENTEK 北极星STM32H750/F750开发板 实验51
-//视频播放 实验
-//技术支持：www.openedv.com
-//广州市星翼电子科技有限公司
+#include "main.h"
 
 int main(void)
 {
-    Cache_Enable();                        //打开L1-Cache
+    stm32_cache_enable();                  //打开L1-Cache
     HAL_Init();                            //初始化HAL库
-    Stm32_Clock_Init(160, 5, 2, 4);        //设置时钟,400Mhz
+    stm32_clock_init(160, 5, 2, 4);        //设置时钟,400Mhz
     delay_init(400);                       //延时初始化
     uart_init(115200);                     //串口初始化
-    LED_Init();                            //初始化LED
-    KEY_Init();                            //初始化按键
+    led_init();                            //初始化LED
+    key_init();                            //初始化按键
     SDRAM_Init();                          //初始化SDRAM
     LCD_Init();                            //初始化LCD
     W25QXX_Init();                         //初始化W25Q256

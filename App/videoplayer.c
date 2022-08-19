@@ -325,7 +325,7 @@ u8 video_play_mjpeg(u8 *pname)
 					f_read(favi,saibuf[saisavebuf],avix.StreamSize+8,&nr);//填充saibuf	 
 					pbuf=saibuf[saisavebuf];  
 				} 
-				key=KEY_Scan(0);
+				key=key_scan(0);
 				if(key==KEY0_PRES||key==KEY2_PRES)//KEY0/KEY2按下,播放下一个/上一个视频
 				{
 					res=key;
@@ -384,7 +384,7 @@ u8 video_seek(FIL *favi,AVI_INFO *aviinfo,u8 *mbuf)
 	delta=(favi->obj.objsize/totsec)*5;//每次前进5秒钟的数据量 
 	while(1)
 	{
-		key=KEY_Scan(1); 
+		key=key_scan(1); 
 		if(key==WKUP_PRES)//快进
 		{
 			if(fpos<favi->obj.objsize)fpos+=delta; 

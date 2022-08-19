@@ -1,24 +1,31 @@
-#ifndef _LED_H
-#define _LED_H
+#ifndef __LED_H
+#define __LED_H
+
 #include "sys.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32H7开发板
-//LED驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2017/6/8
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	
 
-//LED端口定义
-#define LED0(n)		(n?HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,GPIO_PIN_SET):HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,GPIO_PIN_RESET))
-#define LED0_Toggle (HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1)) //LED0输出电平翻转
-#define LED1(n)		(n?HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,GPIO_PIN_SET):HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,GPIO_PIN_RESET))
-#define LED1_Toggle (HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0)) //LED1输出电平翻转
+/**
+ * https://github.com/XuanSama02
+ * @auther:  XuanSama02
+ * @date:    2022/08/18
+ * @brif:    北极星开发板LED驱动
+ * @version:
+ * 1.0：实现了北极星开发板LED驱动
+ */
 
-void LED_Init(void); //LED初始化函数
+/*
+LED0 -> PB1 红色
+LED1 -> PB0 绿色
+*/
+
+#define LED_GPIO_PORT GPIOB       //LED端口
+#define LED0_PIN      GPIO_PIN_1  //LED0引脚
+#define LED1_PIN      GPIO_PIN_0  //LED1引脚
+
+#define LED0(n)		(n ? HAL_GPIO_WritePin(LED_GPIO_PORT, LED0_PIN, GPIO_PIN_SET) : HAL_GPIO_WritePin(LED_GPIO_PORT, LED0_PIN, GPIO_PIN_RESET))
+#define LED0_Toggle (HAL_GPIO_TogglePin(LED_GPIO_PORT, LED0_PIN))
+#define LED1(n)		(n ? HAL_GPIO_WritePin(LED_GPIO_PORT, LED1_PIN, GPIO_PIN_SET) : HAL_GPIO_WritePin(LED_GPIO_PORT, LED1_PIN, GPIO_PIN_RESET))
+#define LED1_Toggle (HAL_GPIO_TogglePin(LED_GPIO_PORT, LED1_PIN))
+
+void led_init(void);  //LED初始化函数
+
 #endif

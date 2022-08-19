@@ -217,7 +217,7 @@ u8 wav_play_song(u8* fname)
 					else fillnum=wav_buffill(audiodev.saibuf1,WAV_SAI_TX_DMA_BUFSIZE,wavctrl.bps);//Ìî³äbuf1
 					while(1)
 					{
-						key=KEY_Scan(0); 
+						key=key_scan(0); 
 						if(key==WKUP_PRES)//ÔÝÍ£
 						{
 							if(audiodev.status&0X01)audiodev.status&=~(1<<0);
