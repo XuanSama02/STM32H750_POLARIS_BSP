@@ -33,55 +33,55 @@ FMC时钟频率 = pll2_r_ck = ((25/25)*512/2) = 256Mhz
  */
 u8 stm32_clock_init(u32 plln, u32 pllm, u32 pllp, u32 pllq)
 {
-	RCC_OscInitTypeDef ymx_osc_init;
-	RCC_ClkInitTypeDef ymx_clk_init;
+    RCC_OscInitTypeDef ymx_osc_init;
+    RCC_ClkInitTypeDef ymx_clk_init;
 
-	MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+    MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-	while((PWR->D3CR&(PWR_D3CR_VOSRDY)) != PWR_D3CR_VOSRDY);
+    while((PWR->D3CR&(PWR_D3CR_VOSRDY)) != PWR_D3CR_VOSRDY);
 
-	ymx_osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSE;  //HSE外部晶振输入
-	ymx_osc_init.HSEState       = RCC_HSE_ON;              //HSE时钟开启
-	ymx_osc_init.HSIState       = RCC_HSI_OFF;             //SHI时钟关闭
-	ymx_osc_init.CSIState       = RCC_CSI_OFF;             //CSI时钟关闭
-	ymx_osc_init.PLL.PLLState   = RCC_PLL_ON;              //锁相环开启
-	ymx_osc_init.PLL.PLLSource  = RCC_PLLSOURCE_HSE;       //锁相环时钟来源HSE
+    ymx_osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSE;  //HSE外部晶振输入
+    ymx_osc_init.HSEState       = RCC_HSE_ON;              //HSE时钟开启
+    ymx_osc_init.HSIState       = RCC_HSI_OFF;             //SHI时钟关闭
+    ymx_osc_init.CSIState       = RCC_CSI_OFF;             //CSI时钟关闭
+    ymx_osc_init.PLL.PLLState   = RCC_PLL_ON;              //锁相环开启
+    ymx_osc_init.PLL.PLLSource  = RCC_PLLSOURCE_HSE;       //锁相环时钟来源HSE
 
-	ymx_osc_init.PLL.PLLN = plln;
-	ymx_osc_init.PLL.PLLM = pllm;
-	ymx_osc_init.PLL.PLLP = pllp;
-	ymx_osc_init.PLL.PLLQ = pllq;
+    ymx_osc_init.PLL.PLLN = plln;
+    ymx_osc_init.PLL.PLLM = pllm;
+    ymx_osc_init.PLL.PLLP = pllp;
+    ymx_osc_init.PLL.PLLQ = pllq;
 
-	ymx_osc_init.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;     //PLL1输出范围
-	ymx_osc_init.PLL.PLLRGE    = RCC_PLL1VCIRANGE_2;  //PLL1输入范围
-	if(HAL_RCC_OscConfig(&ymx_osc_init) != HAL_OK)    //配置时钟源
-		return 1;
+    ymx_osc_init.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;     //PLL1输出范围
+    ymx_osc_init.PLL.PLLRGE    = RCC_PLL1VCIRANGE_2;  //PLL1输入范围
+    if(HAL_RCC_OscConfig(&ymx_osc_init) != HAL_OK)    //配置时钟源
+        return 1;
 
-	qspi_memmap_mode(); //QSPI内存映射模式,需要在时钟初始化之前开启,否则会有各种问题
+    qspi_memmap_mode(); //QSPI内存映射模式,需要在时钟初始化之前开启,否则会有各种问题
 
-	ymx_clk_init.ClockType=(RCC_CLOCKTYPE_SYSCLK  |\
+    ymx_clk_init.ClockType=(RCC_CLOCKTYPE_SYSCLK  |\
                             RCC_CLOCKTYPE_HCLK    |\
                             RCC_CLOCKTYPE_D1PCLK1 |\
                             RCC_CLOCKTYPE_PCLK1   |\
                             RCC_CLOCKTYPE_PCLK2   |\
                             RCC_CLOCKTYPE_D3PCLK1);
 
-	ymx_clk_init.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;  //系统时钟来源:锁相环输出
-	ymx_clk_init.SYSCLKDivider  = RCC_SYSCLK_DIV1;          //系统时钟分频系数:1
-	ymx_clk_init.AHBCLKDivider  = RCC_HCLK_DIV2;            //HCLK时钟分频系数:2
-	ymx_clk_init.APB1CLKDivider = RCC_APB1_DIV2;            //APB1时钟分频系数:2
-	ymx_clk_init.APB2CLKDivider = RCC_APB2_DIV2;            //APB2时钟分频系数:2
-	ymx_clk_init.APB3CLKDivider = RCC_APB3_DIV2;            //APB3时钟分频系数:2
-	ymx_clk_init.APB4CLKDivider = RCC_APB4_DIV4;            //APB4时钟分频系数:4
-	if(HAL_RCC_ClockConfig(&ymx_clk_init, FLASH_LATENCY_2) != HAL_OK)  //配置系统时钟
-		return 1;
+    ymx_clk_init.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;  //系统时钟来源:锁相环输出
+    ymx_clk_init.SYSCLKDivider  = RCC_SYSCLK_DIV1;          //系统时钟分频系数:1
+    ymx_clk_init.AHBCLKDivider  = RCC_HCLK_DIV2;            //HCLK时钟分频系数:2
+    ymx_clk_init.APB1CLKDivider = RCC_APB1_DIV2;            //APB1时钟分频系数:2
+    ymx_clk_init.APB2CLKDivider = RCC_APB2_DIV2;            //APB2时钟分频系数:2
+    ymx_clk_init.APB3CLKDivider = RCC_APB3_DIV2;            //APB3时钟分频系数:2
+    ymx_clk_init.APB4CLKDivider = RCC_APB4_DIV4;            //APB4时钟分频系数:4
+    if(HAL_RCC_ClockConfig(&ymx_clk_init, FLASH_LATENCY_2) != HAL_OK)  //配置系统时钟
+        return 1;
 
-	__HAL_RCC_CSI_ENABLE();         //使能CSI时钟
-	__HAL_RCC_SYSCFG_CLK_ENABLE();  //使能APB4_SYSCFG时钟
-	HAL_EnableCompensationCell();   //使能IO补偿单元
+    __HAL_RCC_CSI_ENABLE();         //使能CSI时钟
+    __HAL_RCC_SYSCFG_CLK_ENABLE();  //使能APB4_SYSCFG时钟
+    HAL_EnableCompensationCell();   //使能IO补偿单元
 
-	return 0;  //配置成功
+    return 0;  //配置成功
 }
 
 /**
@@ -92,7 +92,7 @@ void stm32_cache_enable(void)
 {
     SCB_EnableICache();  //使能ICache
     SCB_EnableDCache();  //使能DCache   
-	SCB->CACR|=1<<2;     //强制DCache透写,如不开启,实际使用中可能遇到各种问题
+    SCB->CACR|=1<<2;     //强制DCache透写,如不开启,实际使用中可能遇到各种问题
 }
 
 /**
@@ -125,93 +125,93 @@ u8 stm32_dcache_status(void)
  */
 void qspi_memmap_mode(void)
 {
-	u32  tempreg   = 0;
-	vu32 *data_reg = &QUADSPI->DR;
-	GPIO_InitTypeDef ymx_gpio_init;
+    u32  tempreg   = 0;
+    vu32 *data_reg = &QUADSPI->DR;
+    GPIO_InitTypeDef ymx_gpio_init;
 
-	RCC->AHB4ENR|=1<<1;   //使能GPIOB时钟
-	RCC->AHB4ENR|=1<<5;   //使能GPIOF时钟
-	RCC->AHB3ENR|=1<<14;  //使能QSPI时钟
+    RCC->AHB4ENR|=1<<1;   //使能GPIOB时钟
+    RCC->AHB4ENR|=1<<5;   //使能GPIOF时钟
+    RCC->AHB3ENR|=1<<14;  //使能QSPI时钟
 
-	ymx_gpio_init.Pin       = GPIO_PIN_6;                 //PB6 AF10
-	ymx_gpio_init.Mode      = GPIO_MODE_AF_PP;            //复用推挽输出
-	ymx_gpio_init.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;  //高速
-	ymx_gpio_init.Pull      = GPIO_NOPULL;                //无上拉下拉
-	ymx_gpio_init.Alternate = GPIO_AF10_QUADSPI;          //复用为QSPI
-	HAL_GPIO_Init(GPIOB, &ymx_gpio_init);
+    ymx_gpio_init.Pin       = GPIO_PIN_6;                 //PB6 AF10
+    ymx_gpio_init.Mode      = GPIO_MODE_AF_PP;            //复用推挽输出
+    ymx_gpio_init.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;  //高速
+    ymx_gpio_init.Pull      = GPIO_NOPULL;                //无上拉下拉
+    ymx_gpio_init.Alternate = GPIO_AF10_QUADSPI;          //复用为QSPI
+    HAL_GPIO_Init(GPIOB, &ymx_gpio_init);
 
-	ymx_gpio_init.Pin       = GPIO_PIN_2;                 //PB2 AF9	
-	ymx_gpio_init.Alternate = GPIO_AF9_QUADSPI;
-	HAL_GPIO_Init(GPIOB, &ymx_gpio_init);
+    ymx_gpio_init.Pin       = GPIO_PIN_2;                 //PB2 AF9	
+    ymx_gpio_init.Alternate = GPIO_AF9_QUADSPI;
+    HAL_GPIO_Init(GPIOB, &ymx_gpio_init);
 
-	ymx_gpio_init.Pin       = GPIO_PIN_6|GPIO_PIN_7;      //PF6,7 AF9
-	ymx_gpio_init.Alternate = GPIO_AF9_QUADSPI;
-	HAL_GPIO_Init(GPIOF, &ymx_gpio_init);
+    ymx_gpio_init.Pin       = GPIO_PIN_6|GPIO_PIN_7;      //PF6,7 AF9
+    ymx_gpio_init.Alternate = GPIO_AF9_QUADSPI;
+    HAL_GPIO_Init(GPIOF, &ymx_gpio_init);
 
-	ymx_gpio_init.Pin       = GPIO_PIN_8|GPIO_PIN_9;      //PF8,9 AF10
-	ymx_gpio_init.Alternate = GPIO_AF10_QUADSPI;
-	HAL_GPIO_Init(GPIOF, &ymx_gpio_init);
+    ymx_gpio_init.Pin       = GPIO_PIN_8|GPIO_PIN_9;      //PF8,9 AF10
+    ymx_gpio_init.Alternate = GPIO_AF10_QUADSPI;
+    HAL_GPIO_Init(GPIOF, &ymx_gpio_init);
 
-	//QSPI设置,参考QSPI实验的QSPI_Init函数
-	RCC->AHB3RSTR |= 1<<14;       //复位QSPI
-	RCC->AHB3RSTR &= ~(1<<14);    //停止复位QSPI
-	while(QUADSPI->SR&(1<<5));    //等待BUSY位清零
-	QUADSPI->CR    = 0X01000310;  //设置CR寄存器
-	QUADSPI->DCR   = 0X00160401;  //设置DCR寄存器
-	QUADSPI->CR   |= 1<<0;        //使能QSPI
+    //QSPI设置,参考QSPI实验的QSPI_Init函数
+    RCC->AHB3RSTR |= 1<<14;       //复位QSPI
+    RCC->AHB3RSTR &= ~(1<<14);    //停止复位QSPI
+    while(QUADSPI->SR&(1<<5));    //等待BUSY位清零
+    QUADSPI->CR    = 0X01000310;  //设置CR寄存器
+    QUADSPI->DCR   = 0X00160401;  //设置DCR寄存器
+    QUADSPI->CR   |= 1<<0;        //使能QSPI
 
-	/*
-	注意:QSPI QE位的使能,在QSPI烧写算法里面,就已经设置了
-	所以,这里可以不用设置QE位,否则需要加入对QE位置1的代码
-	不过,代码必须通过仿真器下载,直接烧录到外部QSPI FLASH,是不可用的
-	如果想直接烧录到外部QSPI FLASH也可以用,则需要在这里添加QE位置1的代码
-	*/
+    /*
+    注意:QSPI QE位的使能,在QSPI烧写算法里面,就已经设置了
+    所以,这里可以不用设置QE位,否则需要加入对QE位置1的代码
+    不过,代码必须通过仿真器下载,直接烧录到外部QSPI FLASH,是不可用的
+    如果想直接烧录到外部QSPI FLASH也可以用,则需要在这里添加QE位置1的代码
+    */
 
-	//W25QXX进入QPI模式（0X38指令）
-	while(QUADSPI->SR&(1<<5));         //等待BUSY位清零
-	QUADSPI->CCR  = 0X00000138;        //发送0X38指令,W25QXX进入QPI模式
-	while((QUADSPI->SR&(1<<1)) == 0);  //等待指令发送完成
-	QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
+    //W25QXX进入QPI模式（0X38指令）
+    while(QUADSPI->SR&(1<<5));         //等待BUSY位清零
+    QUADSPI->CCR  = 0X00000138;        //发送0X38指令,W25QXX进入QPI模式
+    while((QUADSPI->SR&(1<<1)) == 0);  //等待指令发送完成
+    QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
 
-	//W25QXX写使能（0X06指令）
-	while(QUADSPI->SR & (1<<5));       //等待BUSY位清零
-	QUADSPI->CCR  = 0X00000106;        //发送0X06指令,W25QXX写使能
-	while((QUADSPI->SR&(1<<1)) == 0);  //等待指令发送完成
-	QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
+    //W25QXX写使能（0X06指令）
+    while(QUADSPI->SR & (1<<5));       //等待BUSY位清零
+    QUADSPI->CCR  = 0X00000106;        //发送0X06指令,W25QXX写使能
+    while((QUADSPI->SR&(1<<1)) == 0);  //等待指令发送完成
+    QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
 
-	//W25QXX设置QPI相关读参数（0XC0）
-	while(QUADSPI->SR & (1<<5));       //等待BUSY位清零 
-	QUADSPI->CCR  = 0X030003C0;        //发送0XC0指令,W25QXX读参数设置
-	QUADSPI->DLR  = 0;
-	while((QUADSPI->SR&(1<<2)) == 0);  //等待FTF
-	*(vu8 *)data_reg = 3<<4;           //设置P4&P5=11,8个dummy clocks,104M
-	QUADSPI->CR  |= 1<<2;              //终止传输
-	while((QUADSPI->SR&(1<<1)) == 0);  //等待数据发送完成
-	QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
-	while(QUADSPI->SR & (1<<5));       //等待BUSY位清零
+    //W25QXX设置QPI相关读参数（0XC0）
+    while(QUADSPI->SR & (1<<5));       //等待BUSY位清零 
+    QUADSPI->CCR  = 0X030003C0;        //发送0XC0指令,W25QXX读参数设置
+    QUADSPI->DLR  = 0;
+    while((QUADSPI->SR&(1<<2)) == 0);  //等待FTF
+    *(vu8 *)data_reg = 3<<4;           //设置P4&P5=11,8个dummy clocks,104M
+    QUADSPI->CR  |= 1<<2;              //终止传输
+    while((QUADSPI->SR&(1<<1)) == 0);  //等待数据发送完成
+    QUADSPI->FCR |= 1<<1;              //清除发送完成标志位
+    while(QUADSPI->SR & (1<<5));       //等待BUSY位清零
 
-	//MemroyMap模式设置
-	while(QUADSPI->SR & (1<<5));  //等待BUSY位清零
-	QUADSPI->ABR = 0;             //交替字节设置为0，实际上就是W25Q 0XEB指令的,M0~M7=0
-	tempreg  = 0XEB;              //INSTRUCTION[7:0]=0XEB,发送0XEB指令(Fast Read QUAD I/O)
-	tempreg |= 3<<8;              //IMODE  [1:0]=3, 四线传输指令
-	tempreg |= 3<<10;             //ADDRESS[1:0]=3, 四线传输地址
-	tempreg |= 2<<12;             //ADSIZE [1:0]=2, 24位地址长度
-	tempreg |= 3<<14;             //ABMODE [1:0]=3, 四线传输交替字节
-	tempreg |= 0<<16;             //ABSIZE [1:0]=0, 8位交替字节(M0~M7)
-	tempreg |= 6<<18;             //DCYC   [4:0]=6, 6个dummy周期
-	tempreg |= 3<<24;             //DMODE  [1:0]=3, 四线传输数据
-	tempreg |= 3<<26;             //FMODE  [1:0]=3, 内存映射模式
-	QUADSPI->CCR = tempreg;       //设置CCR寄存器
+    //MemroyMap模式设置
+    while(QUADSPI->SR & (1<<5));  //等待BUSY位清零
+    QUADSPI->ABR = 0;             //交替字节设置为0，实际上就是W25Q 0XEB指令的,M0~M7=0
+    tempreg  = 0XEB;              //INSTRUCTION[7:0]=0XEB,发送0XEB指令(Fast Read QUAD I/O)
+    tempreg |= 3<<8;              //IMODE  [1:0]=3, 四线传输指令
+    tempreg |= 3<<10;             //ADDRESS[1:0]=3, 四线传输地址
+    tempreg |= 2<<12;             //ADSIZE [1:0]=2, 24位地址长度
+    tempreg |= 3<<14;             //ABMODE [1:0]=3, 四线传输交替字节
+    tempreg |= 0<<16;             //ABSIZE [1:0]=0, 8位交替字节(M0~M7)
+    tempreg |= 6<<18;             //DCYC   [4:0]=6, 6个dummy周期
+    tempreg |= 3<<24;             //DMODE  [1:0]=3, 四线传输数据
+    tempreg |= 3<<26;             //FMODE  [1:0]=3, 内存映射模式
+    QUADSPI->CCR = tempreg;       //设置CCR寄存器
 
-	//设置QSPI FLASH空间的MPU保护
-	SCB->SHCSR &= ~(1<<16);       //禁止MemManage
-	MPU->CTRL  &= ~(1<<0);        //禁止MPU
-	MPU->RNR    = 0;              //设置保护区域编号为0(1~7可以给其他内存用)
-	MPU->RBAR   = 0X90000000;     //基地址为0X9000 000,即QSPI的起始地址
-	MPU->RASR   = 0X0303002D;     //设置相关保护参数(禁止共用,允许cache,允许缓冲),详见MPU实验的解析
-	MPU->CTRL   = (1<<2)|(1<<0);  //使能PRIVDEFENA,使能MPU
-	SCB->SHCSR |= 1<<16;          //使能MemManage
+    //设置QSPI FLASH空间的MPU保护
+    SCB->SHCSR &= ~(1<<16);       //禁止MemManage
+    MPU->CTRL  &= ~(1<<0);        //禁止MPU
+    MPU->RNR    = 0;              //设置保护区域编号为0(1~7可以给其他内存用)
+    MPU->RBAR   = 0X90000000;     //基地址为0X9000 000,即QSPI的起始地址
+    MPU->RASR   = 0X0303002D;     //设置相关保护参数(禁止共用,允许cache,允许缓冲),详见MPU实验的解析
+    MPU->CTRL   = (1<<2)|(1<<0);  //使能PRIVDEFENA,使能MPU
+    SCB->SHCSR |= 1<<16;          //使能MemManage
 }
 
 #ifdef  USE_FULL_ASSERT
@@ -223,9 +223,9 @@ void qspi_memmap_mode(void)
  */
 void assert_failed(uint8_t* file, uint32_t line)
 { 
-	while (1)
-	{
-	}
+    while (1)
+    {
+    }
 }
 #endif
 
@@ -279,7 +279,7 @@ void __attribute__((noinline)) MSR_MSP(u32 addr)
  */
 __asm void WFI_SET(void)
 {
-	WFI;		  
+    WFI;		  
 }
 
 /**
@@ -288,8 +288,8 @@ __asm void WFI_SET(void)
  */
 __asm void INTX_DISABLE(void)
 {
-	CPSID   I
-	BX      LR	  
+    CPSID   I
+    BX      LR	  
 }
 
 /**
@@ -298,8 +298,8 @@ __asm void INTX_DISABLE(void)
  */
 __asm void INTX_ENABLE(void)
 {
-	CPSIE   I
-	BX      LR  
+    CPSIE   I
+    BX      LR  
 }
 
 /**
@@ -309,8 +309,8 @@ __asm void INTX_ENABLE(void)
  */
 __asm void MSR_MSP(u32 addr) 
 {
-	MSR MSP, r0  //set Main Stack value
-	BX r14
+    MSR MSP, r0  //set Main Stack value
+    BX r14
 }
 
 #endif

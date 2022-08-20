@@ -129,7 +129,7 @@ u8 updata_fontx(u16 x,u16 y,u8 size,u8 *fxpath,u8 fx)
         {
             res=f_read(fftemp,tempbuf,4096,(UINT *)&bread);		//读取数据
             if(res!=FR_OK)break;								//执行错误
-            W25QXX_Write(tempbuf,offx+flashaddr,4096);		//从0开始写入4096个数据
+            w25qxx_write(tempbuf,offx+flashaddr,4096);		//从0开始写入4096个数据
             offx+=bread;
             fupd_prog(x,y,size,fftemp->obj.objsize,offx);	 			//进度显示
             if(bread!=4096)break;								//读完了.
@@ -185,12 +185,12 @@ u8 update_font(u16 x,u16 y,u8 size,u8* src)
         for(i=0; i<FONTSECSIZE; i++)			//先擦除字库区域,提高写入速度
         {
             fupd_prog(x+20*size/2,y,size,FONTSECSIZE,i);//进度显示
-            W25QXX_Read((u8*)buf,((FONTINFOADDR/4096)+i)*4096,4096);//读出整个扇区的内容
+            w25qxx_read((u8*)buf,((FONTINFOADDR/4096)+i)*4096,4096);//读出整个扇区的内容
             for(j=0; j<1024; j++) //校验数据
             {
                 if(buf[j]!=0XFFFFFFFF)break;//需要擦除
             }
-            if(j!=1024)W25QXX_Erase_Sector((FONTINFOADDR/4096)+i);	//需要擦除的扇区
+            if(j!=1024)w25qxx_erase_sector((FONTINFOADDR/4096)+i);	//需要擦除的扇区
         }
         for(i=0; i<5; i++)	//依次更新UNIGBK,GBK12,GBK16,GBK24,GBK32
         {
@@ -207,7 +207,7 @@ u8 update_font(u16 x,u16 y,u8 size,u8* src)
         }
         //全部更新好了
         ftinfo.fontok=0XAA;
-        W25QXX_Write((u8*)&ftinfo,FONTINFOADDR,sizeof(ftinfo));	//保存字库信息
+        w25qxx_write((u8*)&ftinfo,FONTINFOADDR,sizeof(ftinfo));	//保存字库信息
     }
     myfree(SRAMIN,pname);//释放内存
     myfree(SRAMIN,buf);
@@ -219,11 +219,11 @@ u8 update_font(u16 x,u16 y,u8 size,u8* src)
 u8 font_init(void)
 {
     u8 t=0;
-    W25QXX_Init();
+    w25qxx_init();
     while(t<10)//连续读取10次,都是错误,说明确实是有问题,得更新字库了
     {
         t++;
-        W25QXX_Read((u8*)&ftinfo,FONTINFOADDR,sizeof(ftinfo));//读出ftinfo结构体数据
+        w25qxx_read((u8*)&ftinfo,FONTINFOADDR,sizeof(ftinfo));//读出ftinfo结构体数据
         if(ftinfo.fontok==0XAA)break;
         delay_ms(20);
     }

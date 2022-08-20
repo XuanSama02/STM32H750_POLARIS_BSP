@@ -38,7 +38,7 @@ WCHAR ff_uni2oem (	/* Returns OEM code character, zero on error */
 		for (n = 16; n; n--)
 		{
 			i = li + (hi - li) / 2;	
-			W25QXX_Read((u8*)&t,ftinfo.ugbkaddr+i*4+gbk2uni_offset,4);//读出4个字节  
+			w25qxx_read((u8*)&t,ftinfo.ugbkaddr+i*4+gbk2uni_offset,4);//读出4个字节  
 			if (uni== t[0]) break;
 			if (uni>t[0])li = i;  
 			else hi = i;    
@@ -69,7 +69,7 @@ WCHAR ff_oem2uni (	/* Returns Unicode character, zero on error */
 		for (n = 16; n; n--)
 		{
 			i = li + (hi - li) / 2;	
-			W25QXX_Read((u8*)&t,ftinfo.ugbkaddr+i*4+gbk2uni_offset,4);//读出4个字节  
+			w25qxx_read((u8*)&t,ftinfo.ugbkaddr+i*4+gbk2uni_offset,4);//读出4个字节  
 			if (oem==t[0]) break;
 			if (oem>t[0])li = i;  
 			else hi = i;    

@@ -264,7 +264,7 @@ u8 video_play_mjpeg(u8 *pname)
 				break;
 			}
 			video_info_show(&avix); 
-			TIM6_Init(avix.SecPerFrame/100-1,20000-1);//10Khz计数频率,加1是100us 
+			tim6_init(avix.SecPerFrame/100-1,20000-1);//10Khz计数频率,加1是100us 
 			offset=avi_srarch_id(pbuf,AVI_VIDEO_BUF_SIZE,"movi");//寻找movi ID	 
 			avi_get_streaminfo(pbuf+offset+4);			//获取流信息 
 			f_lseek(favi,offset+12);					//跳过标志ID,读地址偏移到流数据开始处	 

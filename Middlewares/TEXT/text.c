@@ -43,16 +43,16 @@ void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size)
 	switch(size)
 	{
 		case 12:
-			W25QXX_Read(mat,foffset+ftinfo.f12addr,csize);
+			w25qxx_read(mat,foffset+ftinfo.f12addr,csize);
 			break;
 		case 16:
-			W25QXX_Read(mat,foffset+ftinfo.f16addr,csize);
+			w25qxx_read(mat,foffset+ftinfo.f16addr,csize);
 			break;
 		case 24:
-			W25QXX_Read(mat,foffset+ftinfo.f24addr,csize);
+			w25qxx_read(mat,foffset+ftinfo.f24addr,csize);
 			break;
 		case 32:
-			W25QXX_Read(mat,foffset+ftinfo.f32addr,csize);
+			w25qxx_read(mat,foffset+ftinfo.f32addr,csize);
 			break;
 			
 	}     												    

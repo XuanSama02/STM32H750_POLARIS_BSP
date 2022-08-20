@@ -1,140 +1,183 @@
 #include "myiic.h"
 #include "delay.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F7开发板
-//IIC驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2015/12/28
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	
 
-//IIC初始化
-void IIC_Init(void)
+/**
+ * @brief I2C初始化
+ * 
+ */
+void i2c_init(void)
 {
-    GPIO_InitTypeDef GPIO_Initure;
-    
+    GPIO_InitTypeDef ymx_gpio_init;
+    //使能时钟
     __HAL_RCC_GPIOH_CLK_ENABLE();   //使能GPIOH时钟
-    
-    //PH4,5初始化设置
-    GPIO_Initure.Pin=GPIO_PIN_4|GPIO_PIN_5;
-    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //推挽输出
-    GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
-    GPIO_Initure.Speed=GPIO_SPEED_FREQ_VERY_HIGH;    //快速
-    HAL_GPIO_Init(GPIOH,&GPIO_Initure);
-    
+    //配置GPIO
+    ymx_gpio_init.Pin   = GPIO_PIN_4|GPIO_PIN_5;      //设置PH4,PH5
+    ymx_gpio_init.Mode  = GPIO_MODE_OUTPUT_PP;        //推挽输出
+    ymx_gpio_init.Pull  = GPIO_PULLUP;                //上拉
+    ymx_gpio_init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;  //快速
+    HAL_GPIO_Init(GPIOH, &ymx_gpio_init);
+    //I2C空闲状态:SDA与SCL同时为高电平
     IIC_SDA(1);
     IIC_SCL(1);  
 }
 
-//产生IIC起始信号
-void IIC_Start(void)
+/**
+ * @brief 产生I2C起始信号
+ * 
+ */
+void i2c_start(void)
 {
-	SDA_OUT();     //sda线输出
-	IIC_SDA(1);	  	  
-	IIC_SCL(1);
-	delay_us(4);
- 	IIC_SDA(0);//START:when CLK is high,DATA change form high to low 
-	delay_us(4);
-	IIC_SCL(0);//钳住I2C总线，准备发送或接收数据 
-}	  
-//产生IIC停止信号
-void IIC_Stop(void)
-{
-	SDA_OUT();//sda线输出
-	IIC_SCL(0);
-	IIC_SDA(0);//STOP:when CLK is high DATA change form low to high
- 	delay_us(4);
-	IIC_SCL(1); 
-	IIC_SDA(1);//发送I2C总线结束信号
-	delay_us(4);							   	
+    SDA_OUT();   //sad线输出
+    IIC_SDA(1);
+    IIC_SCL(1);
+    delay_us(4);
+    IIC_SDA(0);  //START:SCL高电平,SDA下降沿
+    delay_us(4);
+    IIC_SCL(0);  //钳住I2C总线，准备发送或接收数据
 }
-//等待应答信号到来
-//返回值：1，接收应答失败
-//        0，接收应答成功
-u8 IIC_Wait_Ack(void)
+
+/**
+ * @brief 产生I2C停止信号
+ * 
+ */
+void i2c_stop(void)
 {
-	u8 ucErrTime=0;
-	SDA_IN();      //SDA设置为输入  
-	IIC_SDA(1);delay_us(1);	   
-	IIC_SCL(1);delay_us(1);	 
-	while(READ_SDA)
-	{
-		ucErrTime++;
-		if(ucErrTime>250)
-		{
-			IIC_Stop();
-			return 1;
-		}
-	}
-	IIC_SCL(0);//时钟输出0 	   
-	return 0;  
-} 
-//产生ACK应答
-void IIC_Ack(void)
-{
-	IIC_SCL(0);
-	SDA_OUT();
-	IIC_SDA(0);
-	delay_us(2);
-	IIC_SCL(1);
-	delay_us(2);
-	IIC_SCL(0);
+    SDA_OUT();   //sda线输出
+    IIC_SCL(0);
+    IIC_SDA(0);  //STOP:SCL高电平,SDA上升沿
+    delay_us(4);
+    IIC_SCL(1);
+    IIC_SDA(1);  //发送I2C总线结束信号
+    delay_us(4);
 }
-//不产生ACK应答		    
-void IIC_NAck(void)
+
+/**
+ * @brief I2C发送一个字节
+ * 
+ * @param txd 发送数据
+ */
+void i2c_send_byte(u8 txd)
 {
-	IIC_SCL(0);
-	SDA_OUT();
-	IIC_SDA(1);
-	delay_us(2);
-	IIC_SCL(1);
-	delay_us(2);
-	IIC_SCL(0);
-}					 				     
-//IIC发送一个字节
-//返回从机有无应答
-//1，有应答
-//0，无应答			  
-void IIC_Send_Byte(u8 txd)
-{                        
-    u8 t;   
-	SDA_OUT(); 	    
-    IIC_SCL(0);//拉低时钟开始数据传输
-    for(t=0;t<8;t++)
-    {              
-        IIC_SDA((txd&0x80)>>7);
-        txd<<=1; 	  
-		delay_us(2);   //对TEA5767这三个延时都是必须的
-		IIC_SCL(1);
-		delay_us(2); 
-		IIC_SCL(0);	
-		delay_us(2);
-    }	 
-} 	    
-//读1个字节，ack=1时，发送ACK，ack=0，发送nACK   
-u8 IIC_Read_Byte(unsigned char ack)
-{
-	unsigned char i,receive=0;
-	SDA_IN();//SDA设置为输入
-    for(i=0;i<8;i++ )
-	{
-        IIC_SCL(0); 
+    u8 t;
+    SDA_OUT();
+    IIC_SCL(0);  //拉低时钟开始数据传输
+    for(t=0; t<8; t++)  //依次发送1个字节的8个位
+    {
+        IIC_SDA((txd&0x80) >> 7);
+        txd <<= 1;
+        delay_us(2);    //对TEA5767这三个延时都是必须的
+        IIC_SCL(1);
         delay_us(2);
-		IIC_SCL(1);
-        receive<<=1;
-        if(READ_SDA)receive++;   
-		delay_us(1); 
-    }					 
-    if (!ack)
-        IIC_NAck();//发送nACK
-    else
-        IIC_Ack(); //发送ACK   
-    return receive;
+        IIC_SCL(0);
+        delay_us(2);
+    }
 }
 
+/**
+ * @brief I2C读取一个字节
+ * 
+ * @param ack 1:发送ack 0:发送nack
+ * @return u8 读取的数据
+ */
+u8 i2c_read_byte(unsigned char ack)
+{
+    unsigned char i;
+    unsigned char receive = 0;
+    SDA_IN();  //SDA设置为输入
+    for(i=0; i<8; i++)
+    {
+        IIC_SCL(0);
+        delay_us(2);
+        IIC_SCL(1);
+        receive <<= 1;
+        if(READ_SDA)
+            receive++;
+        delay_us(1);
+    }
+    if(!ack)
+        i2c_nack();  //发送nACK
+    else
+        i2c_ack();   //发送ACK
+    return receive;  //返回发送的数据
+}
 
+/**
+ * @brief I2C等待应答信号
+ * 
+ * @return u8 1:接收应答失败 0:接收应答成功
+ */
+u8 i2c_wait_ack(void)
+{
+    u8 ucErrTime = 0;
+    SDA_IN();  //SDA设置为输入
+    IIC_SDA(1);
+    delay_us(1);
+    IIC_SCL(1);
+    delay_us(1);
+    while(READ_SDA)
+    {
+        ucErrTime++;
+        if(ucErrTime > 250)  //超时
+        {
+            i2c_stop();      //产生I2C停止信号
+            return 1;        //接收失败
+        }
+    }
+    IIC_SCL(0);  //时钟输出0
+    return 0;    //接收成功
+}
+
+/**
+ * @brief 产生ack应答
+ * 
+ */
+void i2c_ack(void)
+{
+    IIC_SCL(0);
+    SDA_OUT();
+    IIC_SDA(0);
+    delay_us(2);
+    IIC_SCL(1);
+    delay_us(2);
+    IIC_SCL(0);
+}
+
+/**
+ * @brief 不产生ack应答
+ * 
+ */
+void i2c_nack(void)
+{
+    IIC_SCL(0);
+    SDA_OUT();
+    IIC_SDA(1);
+    delay_us(2);
+    IIC_SCL(1);
+    delay_us(2);
+    IIC_SCL(0);
+}
+
+/**
+ * @brief I2C写入一字节
+ * 
+ * @param daddr 设备地址
+ * @param addr  数据地址
+ * @param data  写入数据
+ */
+void i2c_write_one_byte(u8 daddr, u8 addr, u8 data)
+{
+    delay_ms(1);
+}
+
+/**
+ * @brief I2C读取一字节
+ * 
+ * @param daddr 设备地址
+ * @param addr  数据地址
+ * @return u8   读出数据
+ */
+u8 i2c_read_one_byte(u8 daddr, u8 addr)
+{
+    delay_ms(1);
+    return 0;
+}

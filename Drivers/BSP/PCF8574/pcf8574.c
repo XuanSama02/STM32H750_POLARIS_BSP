@@ -1,85 +1,94 @@
 #include "pcf8574.h"
 #include "delay.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F7开发板
-//PCF8574驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2016/1/13
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	
 
-//初始化PCF8574
-u8 PCF8574_Init(void)
+/**
+ * @brief 初始化PCF8574
+ * 
+ * @return u8 1:初始化失败 0:初始化成功
+ */
+u8 pcf8574_init(void)
 {
-    u8 temp=0;
-    GPIO_InitTypeDef GPIO_Initure;
-    __HAL_RCC_GPIOB_CLK_ENABLE();           //使能GPIOB时钟
-	
-    GPIO_Initure.Pin=GPIO_PIN_10;           //PG10
-    GPIO_Initure.Mode=GPIO_MODE_INPUT;      //输入
-    GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
-    GPIO_Initure.Speed=GPIO_SPEED_FREQ_VERY_HIGH;     //高速
-    HAL_GPIO_Init(GPIOG,&GPIO_Initure);     //初始化
-    IIC_Init();					            //IIC初始化 	
-	//检查PCF8574是否在位
-    IIC_Start();    	 	   
-	IIC_Send_Byte(PCF8574_ADDR);            //写地址			   
-	temp=IIC_Wait_Ack();		            //等待应答,通过判断是否有ACK应答,来判断PCF8574的状态
-    IIC_Stop();					            //产生一个停止条件
-    PCF8574_WriteOneByte(0XFF);	            //默认情况下所有IO输出高电平
-	return temp;
+    u8 temp = 0;
+    GPIO_InitTypeDef ymx_gpio_init;
+    //开启时钟
+    __HAL_RCC_GPIOB_CLK_ENABLE();  //使能GPIOB时钟
+    //配置GPIO
+    ymx_gpio_init.Pin   = GPIO_PIN_10;                //PG10
+    ymx_gpio_init.Mode  = GPIO_MODE_INPUT;            //输入
+    ymx_gpio_init.Pull  = GPIO_PULLUP;                //上拉
+    ymx_gpio_init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;  //高速
+    HAL_GPIO_Init(GPIOG, &ymx_gpio_init);             //初始化
+    i2c_init();                                       //I2C初始化
+    //检查PCF8574是否在位
+    i2c_start();
+    i2c_send_byte(PCF8574_ADDR);  //写地址
+    temp = i2c_wait_ack();        //等待应答,根据是否有ACK应答,来判断PCF8574的状态
+    i2c_stop();                   //产生一个停止条件
+    pcf8574_write_byte(0XFF);     //默认情况下所有IO输出高电平
+    return temp;
 }
 
-//读取PCF8574的8位IO值
-//返回值:读到的数据
-u8 PCF8574_ReadOneByte(void)
+/**
+ * @brief 读取PCF8574的8位IO值
+ * 
+ * @return u8 读到的数据
+ */
+u8 pcf8574_read_byte(void)
 {				  
-	u8 temp=0;		  	    																 
-    IIC_Start();    	 	   
-	IIC_Send_Byte(PCF8574_ADDR|0X01);   //进入接收模式			   
-	IIC_Wait_Ack();	 
-    temp=IIC_Read_Byte(0);		   
-    IIC_Stop();							//产生一个停止条件	    
-	return temp;
-}
-//向PCF8574写入8位IO值  
-//DataToWrite:要写入的数据
-void PCF8574_WriteOneByte(u8 DataToWrite)
-{				   	  	    																 
-    IIC_Start();  
-    IIC_Send_Byte(PCF8574_ADDR|0X00);   //发送器件地址0X40,写数据 	 
-	IIC_Wait_Ack();	    										  		   
-	IIC_Send_Byte(DataToWrite);    	 	//发送字节							   
-	IIC_Wait_Ack();      
-    IIC_Stop();							//产生一个停止条件 
-	delay_ms(10);	 
+    u8 temp = 0;
+    i2c_start();
+    i2c_send_byte(PCF8574_ADDR|0X01);  //进入接收模式
+    i2c_wait_ack();
+    temp = i2c_read_byte(0);
+    i2c_stop();  //产生一个停止条件
+    return temp;
 }
 
-//设置PCF8574某个IO的高低电平
-//bit:要设置的IO编号,0~7
-//sta:IO的状态;0或1
-void PCF8574_WriteBit(u8 bit,u8 sta)
+/**
+ * @brief 向PCF8574写入8位IO值
+ * 
+ * @param data 要写入的数据
+ */
+void pcf8574_write_byte(u8 data)
 {
-    u8 data;
-    data=PCF8574_ReadOneByte(); //先读出原来的设置
-    if(sta==0)data&=~(1<<bit);     
-    else data|=1<<bit;
-    PCF8574_WriteOneByte(data); //写入新的数据
+    i2c_start();
+    i2c_send_byte(PCF8574_ADDR|0X00);  //发送器件地址0X40,写数据
+    i2c_wait_ack();
+    i2c_send_byte(data);  //发送字节
+    i2c_wait_ack();
+    i2c_stop();  //产生一个停止条件
+    delay_ms(10);
 }
 
-//读取PCF8574的某个IO的值
-//bit：要读取的IO编号,0~7
-//返回值:此IO的值,0或1
-u8 PCF8574_ReadBit(u8 bit)
+/**
+ * @brief 读取PCF8574的某个IO的值
+ * 
+ * @param bit 要读取的IO编号,0~7
+ * @return u8 此IO的值,0或1
+ */
+u8 pcf8574_read_bit(u8 bit)
 {
     u8 data;
-    data=PCF8574_ReadOneByte(); //先读取这个8位IO的值 
-    if(data&(1<<bit))return 1;
-    else return 0;   
+    data=pcf8574_read_byte();  //先读取这个8位IO的值
+    if(data & (1<<bit))
+        return 1;
+    else
+        return 0;
 }  
-    
+
+/**
+ * @brief 设置PCF8574某个IO的高低电平
+ * 
+ * @param bit 要设置的IO编号,0~7
+ * @param sta IO的状态;0或1
+ */
+void pcf8574_write_bit(u8 bit, u8 sta)
+{
+    u8 data;
+    data = pcf8574_read_byte();  //先读出原来的设置
+    if(sta == 0)
+        data &= ~(1<<bit);
+    else
+        data |= 1<<bit;
+    pcf8574_write_byte(data);    //写入新的数据
+}

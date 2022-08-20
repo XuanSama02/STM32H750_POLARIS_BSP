@@ -20,8 +20,8 @@
 //    其他,错误代码
 u8 ES8388_Init(void)
 {
-    IIC_Init();                 	//初始化IIC接口
-    PCF8574_WriteBit(MD_PD, 0);		//打开功放
+    i2c_init();                 	//初始化IIC接口
+    pcf8574_write_bit(MD_PD, 0);		//打开功放
 
     //软复位ES8388
     ES8388_Write_Reg(0, 0x80);
@@ -62,14 +62,14 @@ u8 ES8388_Init(void)
 //    其他,错误代码
 u8 ES8388_Write_Reg(u8 reg, u8 val)
 {
-    IIC_Start();
-    IIC_Send_Byte((ES8388_ADDR << 1)|0); 	//发送器件地址+写命令
-    if(IIC_Wait_Ack())return 1;				//等待应答(成功?/失败?)
-    IIC_Send_Byte(reg);						//写寄存器地址
-    if(IIC_Wait_Ack())return 2;				//等待应答(成功?/失败?)
-    IIC_Send_Byte(val & 0XFF);				//发送数据
-    if(IIC_Wait_Ack())return 3;				//等待应答(成功?/失败?)
-    IIC_Stop();
+    i2c_start();
+    i2c_send_byte((ES8388_ADDR << 1)|0); 	//发送器件地址+写命令
+    if(i2c_wait_ack())return 1;				//等待应答(成功?/失败?)
+    i2c_send_byte(reg);						//写寄存器地址
+    if(i2c_wait_ack())return 2;				//等待应答(成功?/失败?)
+    i2c_send_byte(val & 0XFF);				//发送数据
+    if(i2c_wait_ack())return 3;				//等待应答(成功?/失败?)
+    i2c_stop();
     return 0;
 }
 
@@ -80,16 +80,16 @@ u8 ES8388_Read_Reg(u8 reg)
 {
     u8 temp = 0;
 
-    IIC_Start();
-    IIC_Send_Byte((ES8388_ADDR << 1)|0); 	//发送器件地址+写命令
-    if(IIC_Wait_Ack())return 1;				//等待应答(成功?/失败?)
-    IIC_Send_Byte(reg);						//写寄存器地址
-    if(IIC_Wait_Ack())return 1;				//等待应答(成功?/失败?)
-    IIC_Start();
-    IIC_Send_Byte((ES8388_ADDR << 1)|1); 	//发送器件地址+读命令
-    if(IIC_Wait_Ack())return 1;				//等待应答(成功?/失败?)
-    temp = IIC_Read_Byte(0);
-    IIC_Stop();
+    i2c_start();
+    i2c_send_byte((ES8388_ADDR << 1)|0); 	//发送器件地址+写命令
+    if(i2c_wait_ack())return 1;				//等待应答(成功?/失败?)
+    i2c_send_byte(reg);						//写寄存器地址
+    if(i2c_wait_ack())return 1;				//等待应答(成功?/失败?)
+    i2c_start();
+    i2c_send_byte((ES8388_ADDR << 1)|1); 	//发送器件地址+读命令
+    if(i2c_wait_ack())return 1;				//等待应答(成功?/失败?)
+    temp = i2c_read_byte(0);
+    i2c_stop();
 
     return temp;
 }

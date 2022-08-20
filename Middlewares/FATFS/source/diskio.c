@@ -60,7 +60,7 @@ DSTATUS disk_initialize (
 			res=SD_Init();	//SD卡初始化 
   			break;
 		case EX_FLASH:		//外部flash
-			W25QXX_Init();  //W25QXX初始化
+			w25qxx_init();  //W25QXX初始化
  			break;
 		case EX_NAND:		//外部NAND
 			res=FTL_Init();	//NAND初始化
@@ -99,7 +99,7 @@ DRESULT disk_read (
 		case EX_FLASH://外部flash
 			for(;count>0;count--)
 			{
-				W25QXX_Read(buff,sector*SPI_FLASH_SECTOR_SIZE,SPI_FLASH_SECTOR_SIZE);
+				w25qxx_read(buff,sector*SPI_FLASH_SECTOR_SIZE,SPI_FLASH_SECTOR_SIZE);
 				sector++;
 				buff+=SPI_FLASH_SECTOR_SIZE;
 			}
@@ -143,7 +143,7 @@ DRESULT disk_write (
 		case EX_FLASH://外部flash
 			for(;count>0;count--)
 			{										    
-				W25QXX_Write((u8*)buff,sector*SPI_FLASH_SECTOR_SIZE,SPI_FLASH_SECTOR_SIZE);
+				w25qxx_write((u8*)buff,sector*SPI_FLASH_SECTOR_SIZE,SPI_FLASH_SECTOR_SIZE);
 				sector++;
 				buff+=SPI_FLASH_SECTOR_SIZE;
 			}

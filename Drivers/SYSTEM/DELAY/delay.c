@@ -3,13 +3,13 @@
 
 //如果使用UCOS,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
-	#include "includes.h"   //UCOS支持
+    #include "includes.h"   //UCOS支持
 #endif
 
 static u32 fac_us = 0;      //us延时倍乘数
 
 #if SYSTEM_SUPPORT_OS 	
-	static u16 fac_ms = 0;  //ms延时倍乘数,在os下,代表每个节拍的ms数
+    static u16 fac_ms = 0;  //ms延时倍乘数,在os下,代表每个节拍的ms数
 #endif
 
 #if SYSTEM_SUPPORT_OS  //支持OS,不限于UCOS
@@ -48,10 +48,10 @@ delay_ostimedly:    用于OS延时,可以引起任务调度
 void delay_osschedlock(void)
 {
 #ifdef CPU_CFG_CRITICAL_METHOD  //使用UCOSIII
-	OS_ERR err;
-	OSSchedLock(&err);          //UCOSIII的方式,禁止调度,防止打断us延时
+    OS_ERR err;
+    OSSchedLock(&err);          //UCOSIII的方式,禁止调度,防止打断us延时
 #else                           //否则UCOSII
-	OSSchedLock();              //UCOSII的方式,禁止调度,防止打断us延时
+    OSSchedLock();              //UCOSII的方式,禁止调度,防止打断us延时
 #endif
 }
 
@@ -62,10 +62,10 @@ void delay_osschedlock(void)
 void delay_osschedunlock(void)
 {
 #ifdef CPU_CFG_CRITICAL_METHOD  //使用UCOSIII
-	OS_ERR err;
-	OSSchedUnlock(&err);        //UCOSIII的方式,恢复调度
+    OS_ERR err;
+    OSSchedUnlock(&err);        //UCOSIII的方式,恢复调度
 #else                           //否则UCOSII
-	OSSchedUnlock();            //UCOSII的方式,恢复调度
+    OSSchedUnlock();            //UCOSII的方式,恢复调度
 #endif
 }
 
@@ -77,10 +77,10 @@ void delay_osschedunlock(void)
 void delay_ostimedly(u32 ticks)
 {
 #ifdef CPU_CFG_CRITICAL_METHOD
-	OS_ERR err;
-	OSTimeDly(ticks, OS_OPT_TIME_PERIODIC, &err);  //UCOSIII延时采用周期模式
+    OS_ERR err;
+    OSTimeDly(ticks, OS_OPT_TIME_PERIODIC, &err);  //UCOSIII延时采用周期模式
 #else
-	OSTimeDly(ticks);                              //UCOSII延时
+    OSTimeDly(ticks);                              //UCOSII延时
 #endif
 }
 
@@ -91,12 +91,12 @@ void delay_ostimedly(u32 ticks)
 void SysTick_Handler(void)
 {	
     HAL_IncTick();
-	if(delay_osrunning == 1)  //OS开始跑了,才执行正常的调度处理
-	{
-		OSIntEnter();         //进入中断
-		OSTimeTick();         //调用UCOS的时钟服务程序               
-		OSIntExit();          //触发任务切换软中断
-	}
+    if(delay_osrunning == 1)  //OS开始跑了,才执行正常的调度处理
+    {
+        OSIntEnter();         //进入中断
+        OSTimeTick();         //调用UCOS的时钟服务程序               
+        OSIntExit();          //触发任务切换软中断
+    }
 }
 #endif /*SYSTEM_SUPPORT_OS*/
 
@@ -108,17 +108,17 @@ void SysTick_Handler(void)
 void delay_init(u16 SYSCLK)
 {
     HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);  //SysTick频率为HCLK
-	fac_us = SYSCLK;                            //不论是否使用OS,fac_us都需要使用
+    fac_us = SYSCLK;                            //不论是否使用OS,fac_us都需要使用
 
 #if SYSTEM_SUPPORT_OS                           //如果需要支持OS
-	u32 reload;
-	reload  = SYSCLK;                           //每秒钟的计数次数,单位为K
-	reload *= 1000000/delay_ostickspersec;      //根据delay_ostickspersec设定溢出时间
+    u32 reload;
+    reload  = SYSCLK;                           //每秒钟的计数次数,单位为K
+    reload *= 1000000/delay_ostickspersec;      //根据delay_ostickspersec设定溢出时间
                                                 //reload为24位寄存器,最大值:16777216,在216M下,约合77.7ms左右
-	fac_ms  = 1000/delay_ostickspersec;         //代表OS可以延时的最少单位
-	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;  //开启SysTick中断
-	SysTick->LOAD  = reload; 					//每1/OS_TICKS_PER_SEC秒中断一次
-	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;   //开启SysTick
+    fac_ms  = 1000/delay_ostickspersec;         //代表OS可以延时的最少单位
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;  //开启SysTick中断
+    SysTick->LOAD  = reload; 					//每1/OS_TICKS_PER_SEC秒中断一次
+    SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;   //开启SysTick
 #endif
 }
 
@@ -130,29 +130,29 @@ void delay_init(u16 SYSCLK)
  */
 void delay_us(u32 nus)
 {
-	u32 ticks;
-	u32 told   = 0;
-	u32 tnow   = 0;
-	u32 tcnt   = 0;
-	u32 reload = SysTick->LOAD;  //LOAD的值	    	 
-	    ticks  = nus*fac_us;     //需要的节拍数 
-	delay_osschedlock();         //阻止OS调度，防止打断us延时
-	    told   = SysTick->VAL;   //刚进入时的计数器值
-	while(1)
-	{
-		tnow = SysTick->VAL;
-		if(tnow!=told)
-		{
-			if(tnow < told)    //这里注意一下SYSTICK是一个递减的计数器就可以了
-				tcnt += told-tnow;
-			else
-				tcnt += reload-tnow+told;
-			told = tnow;
-			if(tcnt >= ticks)  //时间超过/等于要延迟的时间,则退出
-				break;
-		}
-	}
-	delay_osschedunlock();     //恢复OS调度
+    u32 ticks;
+    u32 told   = 0;
+    u32 tnow   = 0;
+    u32 tcnt   = 0;
+    u32 reload = SysTick->LOAD;  //LOAD的值	    	 
+        ticks  = nus*fac_us;     //需要的节拍数 
+    delay_osschedlock();         //阻止OS调度，防止打断us延时
+        told   = SysTick->VAL;   //刚进入时的计数器值
+    while(1)
+    {
+        tnow = SysTick->VAL;
+        if(tnow!=told)
+        {
+            if(tnow < told)    //这里注意一下SYSTICK是一个递减的计数器就可以了
+                tcnt += told-tnow;
+            else
+                tcnt += reload-tnow+told;
+            told = tnow;
+            if(tcnt >= ticks)  //时间超过/等于要延迟的时间,则退出
+                break;
+        }
+    }
+    delay_osschedunlock();     //恢复OS调度
 }
 
 /**
@@ -162,15 +162,15 @@ void delay_us(u32 nus)
  */
 void delay_ms(u16 nms)
 {
-	if(delay_osrunning&&delay_osintnesting == 0)  //如果OS已经在运行,且不是在中断里(中断里面不能任务调度)	    
-	{
-		if(nms >= fac_ms)                   //延时的时间大于OS的最少时间周期 
-		{
-   			delay_ostimedly(nms/fac_ms);    //OS延时
-		}
-		nms %= fac_ms;                      //OS已经无法提供这么小的延时了,采用普通方式延时
-	}
-	delay_us((u32)(nms*1000));              //普通方式延时
+    if(delay_osrunning&&delay_osintnesting == 0)  //如果OS已经在运行,且不是在中断里(中断里面不能任务调度)	    
+    {
+        if(nms >= fac_ms)                   //延时的时间大于OS的最少时间周期 
+        {
+               delay_ostimedly(nms/fac_ms);    //OS延时
+        }
+        nms %= fac_ms;                      //OS已经无法提供这么小的延时了,采用普通方式延时
+    }
+    delay_us((u32)(nms*1000));              //普通方式延时
 }
 
 #else  /*SYSTEM_SUPPORT_OS*/ //不需要支持OS时
@@ -181,27 +181,27 @@ void delay_ms(u16 nms)
  */
 void delay_us(u32 nus)
 {		
-	u32 ticks;
-	u32 told   = 0;
-	u32 tnow   = 0;
-	u32 tcnt   = 0;
-	u32 reload = SysTick->LOAD;  //LOAD的值	    	 
-	    ticks  = nus*fac_us;     //需要的节拍数 
-	    told   = SysTick->VAL;   //刚进入时的计数器值
-	while(1)
-	{
-		tnow = SysTick->VAL;
-		if(tnow != told)
-		{
-			if(tnow < told)    //这里注意一下SYSTICK是一个递减的计数器就可以了
-				tcnt += told-tnow;
-			else
-				tcnt += reload-tnow+told;
-			told = tnow;
-			if(tcnt >= ticks)  //时间超过/等于要延迟的时间,则退出
-				break;
-		}
-	}
+    u32 ticks;
+    u32 told   = 0;
+    u32 tnow   = 0;
+    u32 tcnt   = 0;
+    u32 reload = SysTick->LOAD;  //LOAD的值	    	 
+        ticks  = nus*fac_us;     //需要的节拍数 
+        told   = SysTick->VAL;   //刚进入时的计数器值
+    while(1)
+    {
+        tnow = SysTick->VAL;
+        if(tnow != told)
+        {
+            if(tnow < told)    //这里注意一下SYSTICK是一个递减的计数器就可以了
+                tcnt += told-tnow;
+            else
+                tcnt += reload-tnow+told;
+            told = tnow;
+            if(tcnt >= ticks)  //时间超过/等于要延迟的时间,则退出
+                break;
+        }
+    }
 }
 
 /**
@@ -211,9 +211,9 @@ void delay_us(u32 nus)
  */
 void delay_ms(u16 nms)
 {
-	u32 i;
-	for(i=0; i<nms; i++)
-		delay_us(1000);
+    u32 i;
+    for(i=0; i<nms; i++)
+        delay_us(1000);
 }
 
 #endif
