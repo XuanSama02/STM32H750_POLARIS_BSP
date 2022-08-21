@@ -241,7 +241,7 @@ void mjpeg_fill_color(u16 x,u16 y,u16 width,u16 height,u16 *color)
 				*(u16*)((u32)mjpeg_rgb_framebuf+param3-param2*j)=pdata[j];  
 			}
 		}
-	}else if(lcdltdc.pwidth==0)LCD_Color_Fill(x,y,x+width-1,y+height-1,color);			//是MCU屏(RGB横屏无需填充!!,在YUV转换的时候,直接就填充了)
+	}else if(lcdltdc.pwidth==0)lcd_color_fill(x,y,x+width-1,y+height-1,color);			//是MCU屏(RGB横屏无需填充!!,在YUV转换的时候,直接就填充了)
 }
 
 //解码一副JPEG图片

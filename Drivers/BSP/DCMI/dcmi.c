@@ -135,8 +135,8 @@ void DCMI_DMA_Init(u32 mem0addr,u32 mem1addr,u16 memsize,u32 memblen,u32 meminc)
 //DCMI,启动传输
 void DCMI_Start(void)
 {  
-    LCD_SetCursor(0,0);  
-	LCD_WriteRAM_Prepare();		        //开始写入GRAM
+    lcd_set_cursor(0,0);  
+	lcd_write_ram_prepare();		        //开始写入GRAM
     __HAL_DMA_ENABLE(&DMADMCI_Handler); //使能DMA
     DCMI->CR|=DCMI_CR_CAPTURE;          //DCMI捕获使能
 }
@@ -186,11 +186,11 @@ void DMA1_Stream1_IRQHandler(void)
 void DCMI_Set_Window(u16 sx,u16 sy,u16 width,u16 height)
 {
 	DCMI_Stop(); 
-	LCD_Clear(WHITE);
-	LCD_Set_Window(sx,sy,width,height);
+	lcd_clear(WHITE);
+	lcd_window_config(sx,sy,width,height);
 	OV5640_OutSize_Set(0,0,width,height);
-    LCD_SetCursor(0,0);  
-	LCD_WriteRAM_Prepare();		        //开始写入GRAM  
+    lcd_set_cursor(0,0);  
+	lcd_write_ram_prepare();		        //开始写入GRAM  
     __HAL_DMA_ENABLE(&DMADMCI_Handler); //开启DMA1,Stream1  
     DCMI->CR|=DCMI_CR_CAPTURE;          //DCMI捕获使能	
 }

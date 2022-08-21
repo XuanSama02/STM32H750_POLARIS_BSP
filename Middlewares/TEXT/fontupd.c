@@ -66,10 +66,10 @@ u32 fupd_prog(u16 x,u16 y,u8 size,u32 fsize,u32 pos)
     prog*=100;
     if(t!=prog)
     {
-        LCD_ShowString(x+3*size/2,y,240,320,size,"%");
+        lcd_show_string(x+3*size/2,y,240,320,size,"%");
         t=prog;
         if(t>100)t=100;
-        LCD_ShowNum(x,y,t,3,size);//显示数值
+        lcd_show_num(x,y,t,3,size);//显示数值
     }
     return 0;
 }
@@ -181,7 +181,7 @@ u8 update_font(u16 x,u16 y,u8 size,u8* src)
     myfree(SRAMIN,fftemp);	//释放内存
     if(rval==0)				//字库文件都存在.
     {
-        LCD_ShowString(x,y,240,320,size,"Erasing sectors... ");//提示正在擦除扇区
+        lcd_show_string(x,y,240,320,size,"Erasing sectors... ");//提示正在擦除扇区
         for(i=0; i<FONTSECSIZE; i++)			//先擦除字库区域,提高写入速度
         {
             fupd_prog(x+20*size/2,y,size,FONTSECSIZE,i);//进度显示
@@ -194,7 +194,7 @@ u8 update_font(u16 x,u16 y,u8 size,u8* src)
         }
         for(i=0; i<5; i++)	//依次更新UNIGBK,GBK12,GBK16,GBK24,GBK32
         {
-            LCD_ShowString(x,y,240,320,size,UPDATE_REMIND_TBL[i]);
+            lcd_show_string(x,y,240,320,size,UPDATE_REMIND_TBL[i]);
             strcpy((char*)pname,(char*)src);				//copy src内容到pname
             strcat((char*)pname,(char*)GBK_PATH[i]); 		//追加具体文件路径
             res=updata_fontx(x+20*size/2,y,size,pname,i);	//更新字库

@@ -11,6 +11,7 @@
         "stm32h7xx_hal.h": "c",
         "stm32h7xx_hal_conf.h": "c",
         "key.h": "c",
-        "delay.h": "c"
+        "delay.h": "c",
+        "sys.h": "c"
     }
 }

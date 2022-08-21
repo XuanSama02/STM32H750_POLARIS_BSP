@@ -75,8 +75,8 @@ void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode)
 		temp=dzk[t];			//得到点阵数据                          
 		for(t1=0;t1<8;t1++)
 		{
-			if(temp&0x80)LCD_Fast_DrawPoint(x,y,POINT_COLOR);
-			else if(mode==0)LCD_Fast_DrawPoint(x,y,BACK_COLOR); 
+			if(temp&0x80)lcd_draw_point_fast(x,y,lcd_color_point);
+			else if(mode==0)lcd_draw_point_fast(x,y,lcd_color_back); 
 			temp<<=1;
 			y++;
 			if((y-y0)==size)
@@ -119,7 +119,7 @@ void Show_Str(u16 x,u16 y,u16 width,u16 height,u8*str,u8 size,u8 mode)
 					x=x0;
 		            str++; 
 		        }  
-		        else LCD_ShowChar(x,y,*str,size,mode);//有效部分写入 
+		        else lcd_show_char(x,y,*str,size,mode);//有效部分写入 
 				str++; 
 		        x+=size/2; //字符,为全字的一半 
 	        }

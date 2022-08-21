@@ -184,16 +184,16 @@ u8 wav_play_song(u8* fname)
 		{
 			if(wavctrl.bps==16)
 			{
-				ES8388_I2S_Cfg(0,3);	//飞利浦标准,16位数据长度
-                SAIA_Init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);
-				SAIA_SampleRate_Set(wavctrl.samplerate);//设置采样率  
-                SAIA_TX_DMA_Init(audiodev.saibuf1,audiodev.saibuf2,WAV_SAI_TX_DMA_BUFSIZE/2,1); //配置TX DMA,16位
+				es8388_i2s_config(0,3);	//飞利浦标准,16位数据长度
+                saia_init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);
+				saia_samplerate_config(wavctrl.samplerate);//设置采样率  
+                saia_tx_dma_init(audiodev.saibuf1,audiodev.saibuf2,WAV_SAI_TX_DMA_BUFSIZE/2,1); //配置TX DMA,16位
 			}else if(wavctrl.bps==24)
 			{
-				ES8388_I2S_Cfg(0,0);	//飞利浦标准,24位数据长度
-                SAIA_Init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_24);
-				SAIA_SampleRate_Set(wavctrl.samplerate);//设置采样率
-                SAIA_TX_DMA_Init(audiodev.saibuf1,audiodev.saibuf2,WAV_SAI_TX_DMA_BUFSIZE/4,2); //配置TX DMA,32位                
+				es8388_i2s_config(0,0);	//飞利浦标准,24位数据长度
+                saia_init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_24);
+				saia_samplerate_config(wavctrl.samplerate);//设置采样率
+                saia_tx_dma_init(audiodev.saibuf1,audiodev.saibuf2,WAV_SAI_TX_DMA_BUFSIZE/4,2); //配置TX DMA,32位                
 			}
 			sai_tx_callback=wav_sai_dma_tx_callback;			//回调函数指wav_sai_dma_callback 
 			audio_stop();

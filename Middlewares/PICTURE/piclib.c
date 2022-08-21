@@ -27,7 +27,7 @@ _pic_phy pic_phy;		//图片显示物理接口
 void piclib_draw_hline(u16 x0,u16 y0,u16 len,u16 color)
 {
 	if((len==0)||(x0>lcddev.width)||(y0>lcddev.height))return;
-	LCD_Fill(x0,y0,x0+len-1,y0,color);	
+	lcd_fill(x0,y0,x0+len-1,y0,color);	
 }
 //填充颜色
 //x,y:起始坐标
@@ -55,16 +55,16 @@ void piclib_fill_color(u16 x,u16 y,u16 width,u16 height,u16 *color)
 				*(u16*)((u32)plcd+param3-param2*j)=pdata[j]; 
 			}
 		}
-	}else LCD_Color_Fill(x,y,x+width-1,y+height-1,color);//其他情况,直接填充	
+	}else lcd_color_fill(x,y,x+width-1,y+height-1,color);//其他情况,直接填充	
 }
 //////////////////////////////////////////////////////////////////////////
 //画图初始化,在画图之前,必须先调用此函数
 //指定画点/读点
 void piclib_init(void)
 {
-	pic_phy.read_point=LCD_ReadPoint;  		//读点函数实现,仅BMP需要
-	pic_phy.draw_point=LCD_Fast_DrawPoint;	//画点函数实现
-	pic_phy.fill=LCD_Fill;					//填充函数实现,仅GIF需要
+	pic_phy.read_point=lcd_read_point;  		//读点函数实现,仅BMP需要
+	pic_phy.draw_point=lcd_draw_point_fast;	//画点函数实现
+	pic_phy.fill=lcd_fill;					//填充函数实现,仅GIF需要
 	pic_phy.draw_hline=piclib_draw_hline;  	//画线函数实现,仅GIF需要
 	pic_phy.fillcolor=piclib_fill_color;  	//颜色填充函数实现,仅TJPGD需要 
 

@@ -22,7 +22,7 @@ __audiodev audiodev;
 void audio_start(void)
 {
 	audiodev.status = 3<<0;  //开始播放+非暂停
-	SAI_Play_Start();
+	sai_play_start();
 }
 
 /**
@@ -32,7 +32,7 @@ void audio_start(void)
 void audio_stop(void)
 {
 	audiodev.status = 0;
-	SAI_Play_Stop();
+	sai_play_stop();
 }
 
 /**
@@ -73,9 +73,9 @@ u16 audio_get_tnum(u8 *path)
  */
 void audio_index_show(u16 index, u16 total)
 {
-	LCD_ShowxNum(60+0, 230, index, 3, 16, 0X80);  //索引
-	LCD_ShowChar(60+24, 230, '/', 16, 0);
-	LCD_ShowxNum(60+32, 230, total, 3, 16, 0X80);  //总曲目
+	lcd_show_xnum(60+0, 230, index, 3, 16, 0X80);  //索引
+	lcd_show_char(60+24, 230, '/', 16, 0);
+	lcd_show_xnum(60+32, 230, total, 3, 16, 0X80);  //总曲目
 }
 
 /**
@@ -92,17 +92,17 @@ void audio_msg_show(u32 totsec, u32 cursec, u32 bitrate)
 	{
 		playtime=cursec;
 		//显示播放时间
-		LCD_ShowxNum(60, 210, playtime/60, 2, 16, 0X80);       //分钟
-		LCD_ShowChar(60+16, 210, ':', 16, 0);
-		LCD_ShowxNum(60+24, 210, playtime%60, 2, 16, 0X80);    //秒钟
- 		LCD_ShowChar(60+40, 210, '/', 16, 0);
+		lcd_show_xnum(60, 210, playtime/60, 2, 16, 0X80);       //分钟
+		lcd_show_char(60+16, 210, ':', 16, 0);
+		lcd_show_xnum(60+24, 210, playtime%60, 2, 16, 0X80);    //秒钟
+ 		lcd_show_char(60+40, 210, '/', 16, 0);
 		//显示总时间
- 		LCD_ShowxNum(60+48, 210, totsec/60, 2, 16, 0X80);      //分钟
-		LCD_ShowChar(60+64, 210, ':', 16, 0);
-		LCD_ShowxNum(60+72, 210, totsec%60, 2, 16, 0X80);      //秒钟
+ 		lcd_show_xnum(60+48, 210, totsec/60, 2, 16, 0X80);      //分钟
+		lcd_show_char(60+64, 210, ':', 16, 0);
+		lcd_show_xnum(60+72, 210, totsec%60, 2, 16, 0X80);      //秒钟
 		//显示位率
-   		LCD_ShowxNum(60+110, 210, bitrate/1000, 4, 16, 0X80);  //显示位率
-		LCD_ShowString(60+110+32, 210, 200, 16, 16, "Kbps");
+   		lcd_show_xnum(60+110, 210, bitrate/1000, 4, 16, 0X80);  //显示位率
+		lcd_show_string(60+110+32, 210, 200, 16, 16, "Kbps");
 	}
 }
 
@@ -122,14 +122,14 @@ void audio_play(void)
 	u32 *wav_offset_tbl;     //音乐offset索引表
 	FILINFO *wav_file_info;  //文件信息
 
-	ES8388_ADDA_Cfg(1, 0);    //开启DAC关闭ADC
-	ES8388_Output_Cfg(1, 1);  //DAC选择通道1输出
+	es8388_adda_config(1, 0);    //开启DAC关闭ADC
+	es8388_output_config(1, 1);  //DAC选择通道1输出
 
  	while(f_opendir(&wav_dir,"0:/MUSIC"))     //打开音乐文件夹
  	{
 		Show_Str(60, 190, 240, 16, "MUSIC文件夹错误!", 16, 0);
 		delay_ms(200);
-		LCD_Fill(60, 190, 240, 206, WHITE);  //清除显示
+		lcd_fill(60, 190, 240, 206, WHITE);  //清除显示
 		delay_ms(200);
 	}
 	wav_tot_num = audio_get_tnum("0:/MUSIC");  //得到总有效文件数
@@ -137,7 +137,7 @@ void audio_play(void)
  	{
 		Show_Str(60, 190, 240, 16, "没有音乐文件!", 16, 0);
 		delay_ms(200);
-		LCD_Fill(60, 190, 240, 146, WHITE);  //清除显示
+		lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
 		delay_ms(200);
 	}
 	wav_file_info  = (FILINFO*)mymalloc(SRAMIN, sizeof(FILINFO));  //申请内存
@@ -147,7 +147,7 @@ void audio_play(void)
  	{
 		Show_Str(60, 190, 240, 16, "内存分配失败!", 16, 0);
 		delay_ms(200);
-		LCD_Fill(60, 190, 240, 146, WHITE);  //清除显示
+		lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
 		delay_ms(200);
 	}
  	//记录索引
@@ -178,7 +178,7 @@ void audio_play(void)
         if(res!=FR_OK||wav_file_info->fname[0]==0)break;//错误了/到末尾了,退出
 		strcpy((char*)pname,"0:/MUSIC/");//复制路径(目录)
 		strcat((char*)pname,(const char*)wav_file_info->fname);//将文件名接在后面
- 		LCD_Fill(60,190,lcddev.width-1,190+16,WHITE);//清除之前的显示
+ 		lcd_fill(60,190,lcddev.width-1,190+16,WHITE);//清除之前的显示
 		Show_Str(60,190,lcddev.width-60,16,(u8*)wav_file_info->fname,16,0);//显示歌曲名字
 		audio_index_show(curindex+1,wav_tot_num);
 		key=audio_play_song(pname);//播放这个音频文件

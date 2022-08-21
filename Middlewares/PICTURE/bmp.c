@@ -430,7 +430,7 @@ u8 bmp_encode(u8 *filename,u16 x,u16 y,u16 width,u16 height,u8 mode)
 			pixcnt=0;
  			for(tx=x;pixcnt!=(bi4width/2);)
 			{
-				if(pixcnt<hbmp.bmiHeader.biWidth)databuf[pixcnt]=LCD_ReadPoint(tx,ty);//读取坐标点的值 
+				if(pixcnt<hbmp.bmiHeader.biWidth)databuf[pixcnt]=lcd_read_point(tx,ty);//读取坐标点的值 
 				else databuf[pixcnt]=0Xffff;//补充白色的像素.  
 				pixcnt++;
 				tx++;

@@ -95,7 +95,7 @@ void video_time_show(FIL *favi,AVI_INFO *aviinfo)
 	{
 		buf=mymalloc(SRAMIN,100);//申请100字节内存
 		oldsec=cursec; 
-		POINT_COLOR=BLUE; 
+		lcd_color_point=BLUE; 
 		sprintf((char*)buf,"播放时间:%02d:%02d:%02d/%02d:%02d:%02d",cursec/3600,(cursec%3600)/60,cursec%60,totsec/3600,(totsec%3600)/60,totsec%60);
  		Show_Str(10,90,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
 		myfree(SRAMIN,buf);		
@@ -107,7 +107,7 @@ void video_info_show(AVI_INFO *aviinfo)
 {	  
 	u8 *buf;
 	buf=mymalloc(SRAMIN,100);//申请100字节内存 
-	POINT_COLOR=RED; 
+	lcd_color_point=RED; 
 	sprintf((char*)buf,"声道数:%d,采样率:%d",aviinfo->Channels,aviinfo->SampleRate*10); 
  	Show_Str(10,50,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
 	sprintf((char*)buf,"帧率:%d帧",1000/(aviinfo->SecPerFrame/1000)); 
@@ -122,7 +122,7 @@ void video_bmsg_show(u8* name,u16 index,u16 total)
 {		
 	u8* buf;
 	buf=mymalloc(SRAMIN,100);//申请100字节内存
-	POINT_COLOR=RED;
+	lcd_color_point=RED;
 	sprintf((char*)buf,"文件名:%s",name);
 	Show_Str(10,10,lcddev.width-10,16,buf,16,0);//显示文件名
 	sprintf((char*)buf,"索引:%d/%d",index,total);	
@@ -147,7 +147,7 @@ void video_play(void)
  	{	    
 		Show_Str(60,190,240,16,"VIDEO文件夹错误!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,206,WHITE);//清除显示	     
+		lcd_fill(60,190,240,206,WHITE);//清除显示	     
 		delay_ms(200);				  
 	} 									  
 	totavinum=video_get_tnum("0:/VIDEO"); //得到总有效文件数
@@ -155,7 +155,7 @@ void video_play(void)
  	{	    
 		Show_Str(60,190,240,16,"没有视频文件!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,146,WHITE);//清除显示	     
+		lcd_fill(60,190,240,146,WHITE);//清除显示	     
 		delay_ms(200);				  
 	}										   
 	vfileinfo=(FILINFO*)mymalloc(SRAMIN,sizeof(FILINFO));//为长文件缓存区分配内存
@@ -165,7 +165,7 @@ void video_play(void)
  	{	    
 		Show_Str(60,190,240,16,"内存分配失败!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,146,WHITE);//清除显示	     
+		lcd_fill(60,190,240,146,WHITE);//清除显示	     
 		delay_ms(200);				  
 	}  	 
  	//记录索引
@@ -195,7 +195,7 @@ void video_play(void)
         if(res!=FR_OK||vfileinfo->fname[0]==0)break;	//错误了/到末尾了,退出
 		strcpy((char*)pname,"0:/VIDEO/");			//复制路径(目录)
 		strcat((char*)pname,(const char*)vfileinfo->fname); //将文件名接在后面 
-		LCD_Clear(WHITE);							//先清屏
+		lcd_clear(WHITE);							//先清屏
 		video_bmsg_show((u8*)vfileinfo->fname,curindex+1,totavinum);//显示名字,索引等信息		
 		key=video_play_mjpeg(pname); 			 	//播放这个音频文件
 		if(key==KEY2_PRES)		//上一曲
@@ -282,20 +282,20 @@ u8 video_play_mjpeg(u8 *pname)
 			}
 			if(avix.SampleRate)							//有音频信息,才初始化
 			{
-				ES8388_ADDA_Cfg(1,0);	//开启DAC关闭ADC
-				ES8388_Output_Cfg(1,1);	//DAC选择通道1输出
+				es8388_adda_config(1,0);	//开启DAC关闭ADC
+				es8388_output_config(1,1);	//DAC选择通道1输出
 				
 				
-				ES8388_I2S_Cfg(0,3);	//飞利浦标准,16位数据长度
-				SAIA_Init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);		//设置SAI,主发送,16位数据 
-				SAIA_SampleRate_Set(avix.SampleRate);	//设置采样率
-				SAIA_TX_DMA_Init(saibuf[1],saibuf[2],avix.AudioBufSize/2,1);//配置DMA
+				es8388_i2s_config(0,3);	//飞利浦标准,16位数据长度
+				saia_init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);		//设置SAI,主发送,16位数据 
+				saia_samplerate_config(avix.SampleRate);	//设置采样率
+				saia_tx_dma_init(saibuf[1],saibuf[2],avix.AudioBufSize/2,1);//配置DMA
 				
 				sai_tx_callback=audio_sai_dma_callback;	//回调函数指向SAI_DMA_Callback
 				saiplaybuf=0;
 				saisavebuf=0; 
 //				__HAL_SAI_CLEAR_FLAG(&SAI1A_Handler,SAI_IT_OVRUDR);
-				SAI_Play_Start(); //开启sai播放 
+				sai_play_start(); //开启sai播放 
 			}
  			while(1)//播放循环
 			{					
@@ -332,10 +332,10 @@ u8 video_play_mjpeg(u8 *pname)
 					break; 
 				}else if(key==KEY1_PRES||key==WKUP_PRES)
 				{
-					SAI_Play_Stop();//关闭音频
+					sai_play_stop();//关闭音频
 					video_seek(favi,&avix,framebuf);
 					pbuf=framebuf;
-					SAI_Play_Start();//开启DMA播放 
+					sai_play_start();//开启DMA播放 
 				}
 				if(avi_get_streaminfo(pbuf+avix.StreamSize))//读取下一帧 流标志
 				{ 
@@ -354,9 +354,9 @@ u8 video_play_mjpeg(u8 *pname)
 					}
 				} 					   	
 			}
-			SAI_Play_Stop();	//关闭音频
+			sai_play_stop();	//关闭音频
 			TIM6->CR1&=~(1<<0); //关闭定时器6
-			LCD_Set_Window(0,0,lcddev.width,lcddev.height);//恢复窗口
+			//lcd_window_config(0,0,lcddev.width,lcddev.height);//恢复窗口,仅MCU屏
 			mjpeg_free();		//释放内存
 			f_close(favi); 
 		}

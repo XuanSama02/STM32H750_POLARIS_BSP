@@ -95,14 +95,14 @@ void recoder_enter_rec_mode(void)
 	WM8978_SPKvol_Set(0);		//关闭喇叭.
 	WM8978_I2S_Cfg(2,0);		//飞利浦标准,16位数据长度
 
-    SAIA_Init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);
+    saia_init(SAI_MODEMASTER_TX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);
     SAIB_Init(SAI_MODESLAVE_RX,SAI_CLOCKSTROBING_RISINGEDGE,SAI_DATASIZE_16);
-	SAIA_SampleRate_Set(REC_SAMPLERATE);//设置采样率 
-	SAIA_TX_DMA_Init((u8*)&saiplaybuf[0],(u8*)&saiplaybuf[1],1,1);	//配置TX DMA,16位
+	saia_samplerate_config(REC_SAMPLERATE);//设置采样率 
+	saia_tx_dma_init((u8*)&saiplaybuf[0],(u8*)&saiplaybuf[1],1,1);	//配置TX DMA,16位
     __HAL_DMA_DISABLE_IT(&SAI1_TXDMA_Handler,DMA_IT_TC); //关闭传输完成中断(这里不用中断送数据) 
 	SAIA_RX_DMA_Init(sairecbuf1,sairecbuf2,SAI_RX_DMA_BUF_SIZE/2,1);//配置RX DMA
   	sai_rx_callback=rec_sai_dma_rx_callback;//初始化回调函数指sai_rx_callback
- 	SAI_Play_Start();			//开始SAI数据发送(主机)
+ 	sai_play_start();			//开始SAI数据发送(主机)
 	SAI_Rec_Start(); 			//开始SAI数据接收(从机)
 	recoder_remindmsg_show(0);
 }  
@@ -114,7 +114,7 @@ void recoder_enter_play_mode(void)
 	WM8978_Output_Cfg(1,0);		//开启DAC输出 
 	WM8978_MIC_Gain(0);			//MIC增益设置为0 
 	WM8978_SPKvol_Set(50);		//喇叭音量设置
-	SAI_Play_Stop();			//停止时钟发送
+	sai_play_stop();			//停止时钟发送
 	SAI_Rec_Stop(); 			//停止录音
 	recoder_remindmsg_show(1);
 }
@@ -140,20 +140,20 @@ void recoder_wav_init(__WaveHeader* wavhead) //初始化WAV头
 void recoder_msg_show(u32 tsec,u32 kbps)
 {   
 	//显示录音时间			 
-	LCD_ShowString(30,210,200,16,16,"TIME:");	  	  
-	LCD_ShowxNum(30+40,210,tsec/60,2,16,0X80);	//分钟
-	LCD_ShowChar(30+56,210,':',16,0);
-	LCD_ShowxNum(30+64,210,tsec%60,2,16,0X80);	//秒钟	
+	lcd_show_string(30,210,200,16,16,"TIME:");	  	  
+	lcd_show_xnum(30+40,210,tsec/60,2,16,0X80);	//分钟
+	lcd_show_char(30+56,210,':',16,0);
+	lcd_show_xnum(30+64,210,tsec%60,2,16,0X80);	//秒钟	
 	//显示码率		 
-	LCD_ShowString(140,210,200,16,16,"KPBS:");	  	  
-	LCD_ShowxNum(140+40,210,kbps/1000,4,16,0X80);	//码率显示 	
+	lcd_show_string(140,210,200,16,16,"KPBS:");	  	  
+	lcd_show_xnum(140+40,210,kbps/1000,4,16,0X80);	//码率显示 	
 }  	
 //提示信息
 //mode:0,录音模式;1,放音模式
 void recoder_remindmsg_show(u8 mode)
 {
-	LCD_Fill(30,120,lcddev.width-1,180,WHITE);//清除原来的显示
-	POINT_COLOR=RED;
+	lcd_fill(30,120,lcddev.width-1,180,WHITE);//清除原来的显示
+	lcd_color_point=RED;
 	if(mode==0)	//录音模式
 	{
 		Show_Str(30,120,200,16,"KEY0:REC/PAUSE",16,0); 
@@ -196,7 +196,7 @@ void wav_recorder(void)
  	{	 
 		Show_Str(30,230,240,16,"RECORDER文件夹错误!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(30,230,240,246,WHITE);		//清除显示	     
+		lcd_fill(30,230,240,246,WHITE);		//清除显示	     
 		delay_ms(200);				  
 		f_mkdir("0:/RECORDER");				//创建该目录   
 	}   
@@ -236,7 +236,7 @@ void wav_recorder(void)
 					rec_sta=0;
 					recsec=0;
 				 	LED1(1);	 						//关闭DS1
-					LCD_Fill(30,190,lcddev.width-1,lcddev.height-1,WHITE);//清除显示,清除之前显示的录音文件名		      
+					lcd_fill(30,190,lcddev.width-1,lcddev.height-1,WHITE);//清除显示,清除之前显示的录音文件名		      
 					break;	 
 				case KEY0_PRES:	//REC/PAUSE
 					if(rec_sta&0X01)//原来是暂停,继续录音
@@ -274,12 +274,12 @@ void wav_recorder(void)
 						{				 
 							Show_Str(30,190,lcddev.width,16,"播放:",16,0);		   
 							Show_Str(30+40,190,lcddev.width,16,pname+11,16,0);//显示当播放的文件名字
-							LCD_Fill(30,210,lcddev.width-1,230,WHITE); 
+							lcd_fill(30,210,lcddev.width-1,230,WHITE); 
 							recoder_enter_play_mode();	//进入播放模式
                             printf("播放音频:%s\r\n",pname);
 							audio_play_song(pname);		//播放pname
                             __HAL_DMA_DISABLE_IT(&SAI1_TXDMA_Handler,DMA_IT_TC);    //关闭SAI发送DMA中断                         
-							LCD_Fill(30,190,lcddev.width-1,lcddev.height-1,WHITE);  //清除显示,清除之前显示的录音文件名	            
+							lcd_fill(30,190,lcddev.width-1,lcddev.height-1,WHITE);  //清除显示,清除之前显示的录音文件名	            
                             printf("重新进入录音模式\r\n");
 							recoder_enter_rec_mode();	//重新进入录音模式
 						}
