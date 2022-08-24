@@ -59,7 +59,7 @@ u8 mjpeg_jpeg_core_init(jpeg_codec_typedef *tjpeg)
 void mjpeg_jpeg_core_destroy(jpeg_codec_typedef *tjpeg)
 {
 	u8 i; 
-	JPEG_DMA_Stop();//停止MDMA传输 
+	jpeg_dma_stop();//停止MDMA传输 
 	for(i=0;i<JPEG_DMA_OUTBUF_NB;i++)myfree(SRAMIN,tjpeg->outbuf[i].buf);	//释放内存
 }
 
@@ -79,7 +79,7 @@ void mjpeg_dma_in_callback(void)
 			mjpeg.inbuf[0].size=JPEG_DMA_INBUF_LEN;	//按最大传输长度,分批次传输
 			mjpeg_remain_size-=JPEG_DMA_INBUF_LEN;	//剩余长度递减
 		}
-		JPEG_IN_DMA_Resume((u32)mjpeg.inbuf[0].buf,mjpeg.inbuf[0].size);	//继续下一次DMA传输		
+		jpeg_in_dma_resume((u32)mjpeg.inbuf[0].buf,mjpeg.inbuf[0].size);	//继续下一次DMA传输		
 	}else mjpeg_fileover=1;							//文件读取完成 
 }
 //JPEG输出数据流(YCBCR)回调函数,用于输出YCbCr数据流
@@ -105,7 +105,7 @@ void mjpeg_dma_out_callback(void)
  		mjpeg.outdma_pause=1;					//标记暂停
 	}else										//有效的buf
 	{
-		JPEG_OUT_DMA_Resume((u32)mjpeg.outbuf[mjpeg.outbuf_write_ptr].buf,mjpeg.yuvblk_size);//继续下一次DMA传输
+		jpeg_out_dma_resume((u32)mjpeg.outbuf[mjpeg.outbuf_write_ptr].buf,mjpeg.yuvblk_size);//继续下一次DMA传输
 	}
 }
 //JPEG整个文件解码完成回调函数
@@ -117,7 +117,7 @@ void mjpeg_endofcovert_callback(void)
 void mjpeg_hdrover_callback(void)
 { 
 	mjpeg.state=JPEG_STATE_HEADEROK;			//HEADER获取成功
-	JPEG_Get_Info(&mjpeg);						//获取JPEG相关信息,包括大小,色彩空间,抽样等 
+	jpeg_get_info(&mjpeg);						//获取JPEG相关信息,包括大小,色彩空间,抽样等 
 	//需要获取JPEG基本信息以后,才能根据jpeg输出大小和采样方式,来计算输出缓冲大小,并启动输出MDMA
 	switch(mjpeg.Conf.ChromaSubsampling)
 	{
@@ -137,8 +137,8 @@ void mjpeg_hdrover_callback(void)
 	mjpeg.yuvblk_curheight=0;	//当前行计数器清零 	
 	if(mjpeg.outbuf[1].buf!=NULL)		//两个buf都申请OK
 	{
- 		JPEG_OUT_DMA_Init((u32)mjpeg.outbuf[0].buf,mjpeg.yuvblk_size);	//配置输出DMA
-		JPEG_OUT_DMA_Start();			//启动DMA OUT传输,开始接收JPEG解码数据流 
+ 		jpeg_out_dma_init((u32)mjpeg.outbuf[0].buf,mjpeg.yuvblk_size);	//配置输出DMA
+		jpeg_out_dma_start();			//启动DMA OUT传输,开始接收JPEG解码数据流 
 	} 
 } 
 //初始化MJPEG
@@ -256,7 +256,7 @@ u8 mjpeg_decode(u8* buf,u32 bsize)
 { 
 	vu32 timecnt=0;
 	if(bsize==0)return 0;  
-	JPEG_Decode_Init(&mjpeg);						//初始化硬件JPEG解码器
+	jpeg_decode_init(&mjpeg);						//初始化硬件JPEG解码器
 	mjpeg_remain_size=bsize;						//记录当前图片的大小(字节数)
 	mjpeg.inbuf[0].buf=buf;							//指向jpeg数据流的首地址  
 	mjpeg_fileover=0;								//标记未读完
@@ -269,12 +269,12 @@ u8 mjpeg_decode(u8* buf,u32 bsize)
 		mjpeg.inbuf[0].size=JPEG_DMA_INBUF_LEN;		//按最大传输长度,分批次传输
 		mjpeg_remain_size-=JPEG_DMA_INBUF_LEN;		//剩余长度
 	} 
-	JPEG_IN_DMA_Init((u32)mjpeg.inbuf[0].buf,mjpeg.inbuf[0].size);	//配置输入DMA 
+	jpeg_in_dma_init((u32)mjpeg.inbuf[0].buf,mjpeg.inbuf[0].size);	//配置输入DMA 
 	jpeg_in_callback=mjpeg_dma_in_callback;			//JPEG DMA读取数据回调函数
 	jpeg_out_callback=mjpeg_dma_out_callback; 		//JPEG DMA输出数据回调函数
 	jpeg_eoc_callback=mjpeg_endofcovert_callback;	//JPEG 解码结束回调函数
 	jpeg_hdp_callback=mjpeg_hdrover_callback; 		//JPEG Header解码完成回调函数
- 	JPEG_IN_DMA_Start();							//启动DMA IN传输,开始解码JPEG图片 
+ 	jpeg_in_dma_start();							//启动DMA IN传输,开始解码JPEG图片 
 	while(1)
 	{ 
 		if(mjpeg.outbuf[mjpeg.outbuf_read_ptr].sta==1)	//buf里面有数据要处理
@@ -282,7 +282,7 @@ u8 mjpeg_decode(u8* buf,u32 bsize)
 			//SCB_CleanInvalidateDCache();				//清空D catch
 			if(lcdltdc.pwidth==0||lcddev.dir==0)		//非RGB横屏,需要先将YUV数据解码到rgb565buf,然后再从rgb565buf拷贝到LCD的GRAM
 			{
-				JPEG_DMA2D_YUV2RGB_Conversion(&mjpeg,(u32*)rgb565buf);	//利用DMA2D,将YUV图像转成RGB565图像 
+				jpeg_dma2d_yuv2rgb_conversion(&mjpeg,(u32*)rgb565buf);	//利用DMA2D,将YUV图像转成RGB565图像 
 			}else										//RGB横屏,直接将YUV数据解码到LCD的GRAM,省去了拷贝操作,可以达到最佳性能
 			{
 				mjpeg_ltdc_dma2d_yuv2rgb_fill(imgoffx,imgoffy+mjpeg.yuvblk_curheight,&mjpeg);	//DMA2D将YUV解码到LCD GRAM,速度最快
@@ -295,7 +295,7 @@ u8 mjpeg_decode(u8* buf,u32 bsize)
 			if(mjpeg.yuvblk_curheight>=mjpeg.Conf.ImageHeight)break;				//当前高度等于或者超过图片分辨率的高度,则说明解码完成了,直接退出.
 		}else if(mjpeg.outdma_pause==1&&mjpeg.outbuf[mjpeg.outbuf_write_ptr].sta==0)//out暂停,且当前writebuf已经为空了,则恢复out输出
 		{
- 			JPEG_OUT_DMA_Resume((u32)mjpeg.outbuf[mjpeg.outbuf_write_ptr].buf,mjpeg.yuvblk_size);//继续下一次DMA传输
+ 			jpeg_out_dma_resume((u32)mjpeg.outbuf[mjpeg.outbuf_write_ptr].buf,mjpeg.yuvblk_size);//继续下一次DMA传输
  			mjpeg.outdma_pause=0;
 		}
 		if(mjpeg.state==JPEG_STATE_ERROR)		//解码出错,直接退出

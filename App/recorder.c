@@ -156,13 +156,13 @@ void recoder_remindmsg_show(u8 mode)
 	lcd_color_point=RED;
 	if(mode==0)	//录音模式
 	{
-		Show_Str(30,120,200,16,"KEY0:REC/PAUSE",16,0); 
-		Show_Str(30,140,200,16,"KEY2:STOP&SAVE",16,0); 
-		Show_Str(30,160,200,16,"WK_UP:PLAY",16,0); 
+		show_string(30,120,200,16,"KEY0:REC/PAUSE",16,0); 
+		show_string(30,140,200,16,"KEY2:STOP&SAVE",16,0); 
+		show_string(30,160,200,16,"WK_UP:PLAY",16,0); 
 	}else		//放音模式
 	{
-		Show_Str(30,120,200,16,"KEY0:STOP Play",16,0);  
-		Show_Str(30,140,200,16,"WK_UP:PLAY/PAUSE",16,0); 
+		show_string(30,120,200,16,"KEY0:STOP Play",16,0);  
+		show_string(30,140,200,16,"WK_UP:PLAY/PAUSE",16,0); 
 	}
 }
 //通过时间获取文件名
@@ -194,7 +194,7 @@ void wav_recorder(void)
 	u32 recsec=0;					//录音时间 
   	while(f_opendir(&recdir,"0:/RECORDER"))//打开录音文件夹
  	{	 
-		Show_Str(30,230,240,16,"RECORDER文件夹错误!",16,0);
+		show_string(30,230,240,16,"RECORDER文件夹错误!",16,0);
 		delay_ms(200);				  
 		lcd_fill(30,230,240,246,WHITE);		//清除显示	     
 		delay_ms(200);				  
@@ -249,8 +249,8 @@ void wav_recorder(void)
 					{
 						recsec=0;	 
 						recoder_new_pathname(pname);			//得到新的名字
-						Show_Str(30,190,lcddev.width,16,"录制:",16,0);		   
-						Show_Str(30+40,190,lcddev.width,16,pname+11,16,0);//显示当前录音文件名字
+						show_string(30,190,lcddev.width,16,"录制:",16,0);		   
+						show_string(30+40,190,lcddev.width,16,pname+11,16,0);//显示当前录音文件名字
 				 		recoder_wav_init(wavhead);				//初始化wav数据	
 	 					res=f_open(f_rec,(const TCHAR*)pname, FA_CREATE_ALWAYS | FA_WRITE); 
 						if(res)			//文件创建失败
@@ -272,8 +272,8 @@ void wav_recorder(void)
 					{   	 		 				  
 						if(pname[0])//如果触摸按键被按下,且pname不为空
 						{				 
-							Show_Str(30,190,lcddev.width,16,"播放:",16,0);		   
-							Show_Str(30+40,190,lcddev.width,16,pname+11,16,0);//显示当播放的文件名字
+							show_string(30,190,lcddev.width,16,"播放:",16,0);		   
+							show_string(30+40,190,lcddev.width,16,pname+11,16,0);//显示当播放的文件名字
 							lcd_fill(30,210,lcddev.width-1,230,WHITE); 
 							recoder_enter_play_mode();	//进入播放模式
                             printf("播放音频:%s\r\n",pname);

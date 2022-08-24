@@ -12,6 +12,13 @@
         "stm32h7xx_hal_conf.h": "c",
         "key.h": "c",
         "delay.h": "c",
-        "sys.h": "c"
+        "sys.h": "c",
+        "mpu.h": "c",
+        "nand.h": "c",
+        "main.h": "c",
+        "diskio.h": "c",
+        "text.h": "c",
+        "fontupd.h": "c",
+        "usmart.h": "c"
     }
 }

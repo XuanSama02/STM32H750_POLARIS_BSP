@@ -1,146 +1,144 @@
 #ifndef __SDMMC_SDCARD_H
-#define __SDMMC_SDCARD_H																			   
-#include "sys.h" 													   
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32H7开发板
-//SDMMC 驱动代码	(仅提供查询模式驱动代码)
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2018/7/31
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved		 
-//********************************************************************************
-//升级说明
-//无
-////////////////////////////////////////////////////////////////////////////////// 	 
- 
- 
-//用户配置区			  
+#define __SDMMC_SDCARD_H
+
+#include "sys.h"
+
+/**
+ * https://github.com/XuanSama02
+ * @auther:  XuanSama02
+ * @date:    2022/08/18
+ * @brif:    北极星开发板SDMMC驱动
+ * @version:
+ * 1.0：实现了北极星开发板SDMMC驱动,仅查询模式
+ */
+
+//用户配置区
 //SDMMC时钟计算公式:SDMMC_CK时钟=sdmmc_ker_ck/[2*clkdiv];其中,sdmmc_ker_ck来自pll1_q_ck,为200Mhz
 //如果出现驱动错误,请尝试将SDMMC_TRANSFER_CLK_DIV频率降低
-//#define SDMMC_INIT_CLK_DIV        0xFA		//SDMMC初始化频率，200M/(250*2)=400Khz,最大400Kh  
-#define SDMMC_TRANSFER_CLK_DIV    0x04		//SDMMC传输频率,该值太小可能会导致读写文件出错 
-										 
+//#define SDMMC_INIT_CLK_DIV    0xFA  //SDMMC初始化频率，200M/(250*2)=400Khz,最大400Kh
+#define SDMMC_TRANSFER_CLK_DIV  0x04  //SDMMC传输频率,该值太小可能会导致读写文件出错
+
 //SD卡操作 各种错误枚举定义
 typedef enum
-{	 
-	//特殊错误定义 
-	SD_CMD_CRC_FAIL                    = (1),   /*!< Command response received (but CRC check failed)              */
-	SD_DATA_CRC_FAIL                   = (2),   /*!< Data block sent/received (CRC check failed)                   */
-	SD_CMD_RSP_TIMEOUT                 = (3),   /*!< Command response timeout                                      */
-	SD_DATA_TIMEOUT                    = (4),   /*!< Data timeout                                                  */
-	SD_TX_UNDERRUN                     = (5),   /*!< Transmit FIFO underrun                                        */
-	SD_RX_OVERRUN                      = (6),   /*!< Receive FIFO overrun                                          */
-	SD_START_BIT_ERR                   = (7),   /*!< Start bit not detected on all data signals in wide bus mode   */
-	SD_CMD_OUT_OF_RANGE                = (8),   /*!< Command's argument was out of range.                          */
-	SD_ADDR_MISALIGNED                 = (9),   /*!< Misaligned address                                            */
-	SD_BLOCK_LEN_ERR                   = (10),  /*!< Transferred block length is not allowed for the card or the number of transferred bytes does not match the block length */
-	SD_ERASE_SEQ_ERR                   = (11),  /*!< An error in the sequence of erase command occurs.            */
-	SD_BAD_ERASE_PARAM                 = (12),  /*!< An invalid selection for erase groups                        */
-	SD_WRITE_PROT_VIOLATION            = (13),  /*!< Attempt to program a write protect block                     */
-	SD_LOCK_UNLOCK_FAILED              = (14),  /*!< Sequence or password error has been detected in unlock command or if there was an attempt to access a locked card */
-	SD_COM_CRC_FAILED                  = (15),  /*!< CRC check of the previous command failed                     */
-	SD_ILLEGAL_CMD                     = (16),  /*!< Command is not legal for the card state                      */
-	SD_CARD_ECC_FAILED                 = (17),  /*!< Card internal ECC was applied but failed to correct the data */
-	SD_CC_ERROR                        = (18),  /*!< Internal card controller error                               */
-	SD_GENERAL_UNKNOWN_ERROR           = (19),  /*!< General or unknown error                                     */
-	SD_STREAM_READ_UNDERRUN            = (20),  /*!< The card could not sustain data transfer in stream read operation. */
-	SD_STREAM_WRITE_OVERRUN            = (21),  /*!< The card could not sustain data programming in stream mode   */
-	SD_CID_CSD_OVERWRITE               = (22),  /*!< CID/CSD overwrite error                                      */
-	SD_WP_ERASE_SKIP                   = (23),  /*!< Only partial address space was erased                        */
-	SD_CARD_ECC_DISABLED               = (24),  /*!< Command has been executed without using internal ECC         */
-	SD_ERASE_RESET                     = (25),  /*!< Erase sequence was cleared before executing because an out of erase sequence command was received */
-	SD_AKE_SEQ_ERROR                   = (26),  /*!< Error in sequence of authentication.                         */
-	SD_INVALID_VOLTRANGE               = (27),
-	SD_ADDR_OUT_OF_RANGE               = (28),
-	SD_SWITCH_ERROR                    = (29),
-	SD_SDMMC_DISABLED                  = (30),
-	SD_SDMMC_FUNCTION_BUSY             = (31),
-	SD_SDMMC_FUNCTION_FAILED           = (32),
-	SD_SDMMC_UNKNOWN_FUNCTION          = (33),
-	//标准错误定义
-	SD_INTERNAL_ERROR                  = (34),
-	SD_NOT_CONFIGURED                  = (35),
-	SD_REQUEST_PENDING                 = (36),
-	SD_REQUEST_NOT_APPLICABLE          = (37),
-	SD_INVALID_PARAMETER               = (38),
-	SD_UNSUPPORTED_FEATURE             = (39),
-	SD_UNSUPPORTED_HW                  = (40),
-	SD_ERROR                           = (41),
-	SD_OK                              = (0) 
+{
+    //特殊错误定义:
+     
+    SD_CMD_CRC_FAIL                    = (1),   /*!< Command response received (but CRC check failed)              */
+    SD_DATA_CRC_FAIL                   = (2),   /*!< Data block sent/received (CRC check failed)                   */
+    SD_CMD_RSP_TIMEOUT                 = (3),   /*!< Command response timeout                                      */
+    SD_DATA_TIMEOUT                    = (4),   /*!< Data timeout                                                  */
+    SD_TX_UNDERRUN                     = (5),   /*!< Transmit FIFO underrun                                        */
+    SD_RX_OVERRUN                      = (6),   /*!< Receive FIFO overrun                                          */
+    SD_START_BIT_ERR                   = (7),   /*!< Start bit not detected on all data signals in wide bus mode   */
+    SD_CMD_OUT_OF_RANGE                = (8),   /*!< Command's argument was out of range.                          */
+    SD_ADDR_MISALIGNED                 = (9),   /*!< Misaligned address                                            */
+    SD_BLOCK_LEN_ERR                   = (10),  /*!< Transferred block length is not allowed for the card or the number of transferred bytes does not match the block length */
+    SD_ERASE_SEQ_ERR                   = (11),  /*!< An error in the sequence of erase command occurs.            */
+    SD_BAD_ERASE_PARAM                 = (12),  /*!< An invalid selection for erase groups                        */
+    SD_WRITE_PROT_VIOLATION            = (13),  /*!< Attempt to program a write protect block                     */
+    SD_LOCK_UNLOCK_FAILED              = (14),  /*!< Sequence or password error has been detected in unlock command or if there was an attempt to access a locked card */
+    SD_COM_CRC_FAILED                  = (15),  /*!< CRC check of the previous command failed                     */
+    SD_ILLEGAL_CMD                     = (16),  /*!< Command is not legal for the card state                      */
+    SD_CARD_ECC_FAILED                 = (17),  /*!< Card internal ECC was applied but failed to correct the data */
+    SD_CC_ERROR                        = (18),  /*!< Internal card controller error                               */
+    SD_GENERAL_UNKNOWN_ERROR           = (19),  /*!< General or unknown error                                     */
+    SD_STREAM_READ_UNDERRUN            = (20),  /*!< The card could not sustain data transfer in stream read operation. */
+    SD_STREAM_WRITE_OVERRUN            = (21),  /*!< The card could not sustain data programming in stream mode   */
+    SD_CID_CSD_OVERWRITE               = (22),  /*!< CID/CSD overwrite error                                      */
+    SD_WP_ERASE_SKIP                   = (23),  /*!< Only partial address space was erased                        */
+    SD_CARD_ECC_DISABLED               = (24),  /*!< Command has been executed without using internal ECC         */
+    SD_ERASE_RESET                     = (25),  /*!< Erase sequence was cleared before executing because an out of erase sequence command was received */
+    SD_AKE_SEQ_ERROR                   = (26),  /*!< Error in sequence of authentication.                         */
+    SD_INVALID_VOLTRANGE               = (27),
+    SD_ADDR_OUT_OF_RANGE               = (28),
+    SD_SWITCH_ERROR                    = (29),
+    SD_SDMMC_DISABLED                  = (30),
+    SD_SDMMC_FUNCTION_BUSY             = (31),
+    SD_SDMMC_FUNCTION_FAILED           = (32),
+    SD_SDMMC_UNKNOWN_FUNCTION          = (33),
+
+    //标准错误定义:
+
+    SD_INTERNAL_ERROR                  = (34),
+    SD_NOT_CONFIGURED                  = (35),
+    SD_REQUEST_PENDING                 = (36),
+    SD_REQUEST_NOT_APPLICABLE          = (37),
+    SD_INVALID_PARAMETER               = (38),
+    SD_UNSUPPORTED_FEATURE             = (39),
+    SD_UNSUPPORTED_HW                  = (40),
+    SD_ERROR                           = (41),
+    SD_OK                              = (0) 
 } SD_Error;		  
 
 //SD卡CSD寄存器数据		  
 typedef struct
 {
-	u8  CSDStruct;            /*!< CSD structure */
-	u8  SysSpecVersion;       /*!< System specification version */
-	u8  Reserved1;            /*!< Reserved */
-	u8  TAAC;                 /*!< Data read access-time 1 */
-	u8  NSAC;                 /*!< Data read access-time 2 in CLK cycles */
-	u8  MaxBusClkFrec;        /*!< Max. bus clock frequency */
-	u16 CardComdClasses;      /*!< Card command classes */
-	u8  RdBlockLen;           /*!< Max. read data block length */
-	u8  PartBlockRead;        /*!< Partial blocks for read allowed */
-	u8  WrBlockMisalign;      /*!< Write block misalignment */
-	u8  RdBlockMisalign;      /*!< Read block misalignment */
-	u8  DSRImpl;              /*!< DSR implemented */
-	u8  Reserved2;            /*!< Reserved */
-	u32 DeviceSize;           /*!< Device Size */
-	u8  MaxRdCurrentVDDMin;   /*!< Max. read current @ VDD min */
-	u8  MaxRdCurrentVDDMax;   /*!< Max. read current @ VDD max */
-	u8  MaxWrCurrentVDDMin;   /*!< Max. write current @ VDD min */
-	u8  MaxWrCurrentVDDMax;   /*!< Max. write current @ VDD max */
-	u8  DeviceSizeMul;        /*!< Device size multiplier */
-	u8  EraseGrSize;          /*!< Erase group size */
-	u8  EraseGrMul;           /*!< Erase group size multiplier */
-	u8  WrProtectGrSize;      /*!< Write protect group size */
-	u8  WrProtectGrEnable;    /*!< Write protect group enable */
-	u8  ManDeflECC;           /*!< Manufacturer default ECC */
-	u8  WrSpeedFact;          /*!< Write speed factor */
-	u8  MaxWrBlockLen;        /*!< Max. write data block length */
-	u8  WriteBlockPaPartial;  /*!< Partial blocks for write allowed */
-	u8  Reserved3;            /*!< Reserded */
-	u8  ContentProtectAppli;  /*!< Content protection application */
-	u8  FileFormatGrouop;     /*!< File format group */
-	u8  CopyFlag;             /*!< Copy flag (OTP) */
-	u8  PermWrProtect;        /*!< Permanent write protection */
-	u8  TempWrProtect;        /*!< Temporary write protection */
-	u8  FileFormat;           /*!< File Format */
-	u8  ECC;                  /*!< ECC code */
-	u8  CSD_CRC;              /*!< CSD CRC */
-	u8  Reserved4;            /*!< always 1*/
-} SD_CSD;   
+    u8  CSDStruct;            /*!< CSD structure */
+    u8  SysSpecVersion;       /*!< System specification version */
+    u8  Reserved1;            /*!< Reserved */
+    u8  TAAC;                 /*!< Data read access-time 1 */
+    u8  NSAC;                 /*!< Data read access-time 2 in CLK cycles */
+    u8  MaxBusClkFrec;        /*!< Max. bus clock frequency */
+    u16 CardComdClasses;      /*!< Card command classes */
+    u8  RdBlockLen;           /*!< Max. read data block length */
+    u8  PartBlockRead;        /*!< Partial blocks for read allowed */
+    u8  WrBlockMisalign;      /*!< Write block misalignment */
+    u8  RdBlockMisalign;      /*!< Read block misalignment */
+    u8  DSRImpl;              /*!< DSR implemented */
+    u8  Reserved2;            /*!< Reserved */
+    u32 DeviceSize;           /*!< Device Size */
+    u8  MaxRdCurrentVDDMin;   /*!< Max. read current @ VDD min */
+    u8  MaxRdCurrentVDDMax;   /*!< Max. read current @ VDD max */
+    u8  MaxWrCurrentVDDMin;   /*!< Max. write current @ VDD min */
+    u8  MaxWrCurrentVDDMax;   /*!< Max. write current @ VDD max */
+    u8  DeviceSizeMul;        /*!< Device size multiplier */
+    u8  EraseGrSize;          /*!< Erase group size */
+    u8  EraseGrMul;           /*!< Erase group size multiplier */
+    u8  WrProtectGrSize;      /*!< Write protect group size */
+    u8  WrProtectGrEnable;    /*!< Write protect group enable */
+    u8  ManDeflECC;           /*!< Manufacturer default ECC */
+    u8  WrSpeedFact;          /*!< Write speed factor */
+    u8  MaxWrBlockLen;        /*!< Max. write data block length */
+    u8  WriteBlockPaPartial;  /*!< Partial blocks for write allowed */
+    u8  Reserved3;            /*!< Reserded */
+    u8  ContentProtectAppli;  /*!< Content protection application */
+    u8  FileFormatGrouop;     /*!< File format group */
+    u8  CopyFlag;             /*!< Copy flag (OTP) */
+    u8  PermWrProtect;        /*!< Permanent write protection */
+    u8  TempWrProtect;        /*!< Temporary write protection */
+    u8  FileFormat;           /*!< File Format */
+    u8  ECC;                  /*!< ECC code */
+    u8  CSD_CRC;              /*!< CSD CRC */
+    u8  Reserved4;            /*!< always 1*/
+} SD_CSD;
 
 //SD卡CID寄存器数据
 typedef struct
 {
-	u8  ManufacturerID;       /*!< ManufacturerID */
-	u16 OEM_AppliID;          /*!< OEM/Application ID */
-	u32 ProdName1;            /*!< Product Name part1 */
-	u8  ProdName2;            /*!< Product Name part2*/
-	u8  ProdRev;              /*!< Product Revision */
-	u32 ProdSN;               /*!< Product Serial Number */
-	u8  Reserved1;            /*!< Reserved1 */
-	u16 ManufactDate;         /*!< Manufacturing Date */
-	u8  CID_CRC;              /*!< CID CRC */
-	u8  Reserved2;            /*!< always 1 */
-} SD_CID;	 
+    u8  ManufacturerID;       /*!< ManufacturerID */
+    u16 OEM_AppliID;          /*!< OEM/Application ID */
+    u32 ProdName1;            /*!< Product Name part1 */
+    u8  ProdName2;            /*!< Product Name part2*/
+    u8  ProdRev;              /*!< Product Revision */
+    u32 ProdSN;               /*!< Product Serial Number */
+    u8  Reserved1;            /*!< Reserved1 */
+    u16 ManufactDate;         /*!< Manufacturing Date */
+    u8  CID_CRC;              /*!< CID CRC */
+    u8  Reserved2;            /*!< always 1 */
+} SD_CID;
+
 //SD卡状态
 typedef enum
 {
-	SD_CARD_READY                  = ((uint32_t)0x00000001),
-	SD_CARD_IDENTIFICATION         = ((uint32_t)0x00000002),
-	SD_CARD_STANDBY                = ((uint32_t)0x00000003),
-	SD_CARD_TRANSFER               = ((uint32_t)0x00000004),
-	SD_CARD_SENDING                = ((uint32_t)0x00000005),
-	SD_CARD_RECEIVING              = ((uint32_t)0x00000006),
-	SD_CARD_PROGRAMMING            = ((uint32_t)0x00000007),
-	SD_CARD_DISCONNECTED           = ((uint32_t)0x00000008),
-	SD_CARD_ERROR                  = ((uint32_t)0x000000FF)
+    SD_CARD_READY                  = ((uint32_t)0x00000001),
+    SD_CARD_IDENTIFICATION         = ((uint32_t)0x00000002),
+    SD_CARD_STANDBY                = ((uint32_t)0x00000003),
+    SD_CARD_TRANSFER               = ((uint32_t)0x00000004),
+    SD_CARD_SENDING                = ((uint32_t)0x00000005),
+    SD_CARD_RECEIVING              = ((uint32_t)0x00000006),
+    SD_CARD_PROGRAMMING            = ((uint32_t)0x00000007),
+    SD_CARD_DISCONNECTED           = ((uint32_t)0x00000008),
+    SD_CARD_ERROR                  = ((uint32_t)0x000000FF)
 }SDCardState;
 
 //SD卡信息,包括CSD,CID等数据
@@ -148,13 +146,14 @@ typedef struct
 {
   SD_CSD SD_csd;
   SD_CID SD_cid;
-  long long CardCapacity;  	//SD卡容量,单位:字节,最大支持2^64字节大小的卡.
-  u32 CardBlockSize; 		//SD卡块大小	
-  u16 RCA;					//卡相对地址
-  u8 CardType;				//卡类型
+  long long CardCapacity;  //SD卡容量,单位:字节,最大支持2^64字节大小的卡
+  u32 CardBlockSize;       //SD卡块大小
+  u16 RCA;                 //卡相对地址
+  u8 CardType;             //卡类型
 } SD_CardInfo;
-extern SD_CardInfo SDCardInfo;//SD卡信息			 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+extern SD_CardInfo SDCardInfo;//SD卡信息
+
+
 //SDMMC卡 指令集
 //拷贝自:stm32f7xx_hal_sd.h
 #define SD_CMD_GO_IDLE_STATE                       ((uint8_t)0U)   /*!< Resets the SD memory card.                                                               */
@@ -243,24 +242,23 @@ extern SD_CardInfo SDCardInfo;//SD卡信息
 #define SD_CMD_SD_APP_SECURE_WRITE_MKB             ((uint8_t)48U)  /*!< For SD card only */
 
 //CMD8指令
-#define SD_SDMMC_SEND_IF_COND           	  ((uint32_t)SD_CMD_HS_SEND_EXT_CSD)
-////////////////////////////////////////////////////////////////////////////////////////////////////
+#define SD_SDMMC_SEND_IF_COND         ((uint32_t)SD_CMD_HS_SEND_EXT_CSD)
 
 //支持的SD卡定义
-#define STD_CAPACITY_SD_CARD_V1_1		((uint32_t)0x00000000U)
-#define STD_CAPACITY_SD_CARD_V2_0		((uint32_t)0x00000001U)
-#define HIGH_CAPACITY_SD_CARD			((uint32_t)0x00000002U)
-#define MULTIMEDIA_CARD					((uint32_t)0x00000003U)
-#define SECURE_DIGITAL_IO_CARD			((uint32_t)0x00000004U)
-#define HIGH_SPEED_MULTIMEDIA_CARD		((uint32_t)0x00000005U)
-#define SECURE_DIGITAL_IO_COMBO_CARD	((uint32_t)0x00000006U)
-#define HIGH_CAPACITY_MMC_CARD			((uint32_t)0x00000007U)
+#define STD_CAPACITY_SD_CARD_V1_1     ((uint32_t)0x00000000U)
+#define STD_CAPACITY_SD_CARD_V2_0     ((uint32_t)0x00000001U)
+#define HIGH_CAPACITY_SD_CARD         ((uint32_t)0x00000002U)
+#define MULTIMEDIA_CARD               ((uint32_t)0x00000003U)
+#define SECURE_DIGITAL_IO_CARD        ((uint32_t)0x00000004U)
+#define HIGH_SPEED_MULTIMEDIA_CARD    ((uint32_t)0x00000005U)
+#define SECURE_DIGITAL_IO_COMBO_CARD  ((uint32_t)0x00000006U)
+#define HIGH_CAPACITY_MMC_CARD        ((uint32_t)0x00000007U)
 
 //SDMMC相关参数定义
 #define NULL 0
-//#define SDMMC_STATIC_FLAGS				((u32)0x000205FF)
-#define SDMMC_CMD0TIMEOUT				((u32)0x00010000)	  
-//#define SDMMC_DATATIMEOUT				((u32)0xFFFFFFFF)	 
+//#define SDMMC_STATIC_FLAGS   ((u32)0x000205FF)
+#define SDMMC_CMD0TIMEOUT      ((u32)0x00010000)
+//#define SDMMC_DATATIMEOUT    ((u32)0xFFFFFFFF)
 
 //Mask for errors Card Status R1 (OCR Register)  
 #define SD_OCR_ADDR_OUT_OF_RANGE        ((u32)0x80000000)
@@ -277,7 +275,7 @@ extern SD_CardInfo SDCardInfo;//SD卡信息
 #define SD_OCR_GENERAL_UNKNOWN_ERROR    ((u32)0x00080000)
 #define SD_OCR_STREAM_READ_UNDERRUN     ((u32)0x00040000)
 #define SD_OCR_STREAM_WRITE_OVERRUN     ((u32)0x00020000)
-//#define SD_OCR_CID_CSD_OVERWRIETE       ((u32)0x00010000)
+//#define SD_OCR_CID_CSD_OVERWRIETE     ((u32)0x00010000)
 #define SD_OCR_WP_ERASE_SKIP            ((u32)0x00008000)
 #define SD_OCR_CARD_ECC_DISABLED        ((u32)0x00004000)
 #define SD_OCR_ERASE_RESET              ((u32)0x00002000)
@@ -317,40 +315,34 @@ extern SD_CardInfo SDCardInfo;//SD卡信息
 #define SD_CCCC_LOCK_UNLOCK             ((u32)0x00000080)
 #define SD_CCCC_WRITE_PROT              ((u32)0x00000040)
 #define SD_CCCC_ERASE                   ((u32)0x00000020)
-																 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //相关函数定义
-SD_Error SD_Init(void);
-void SDMMC_Clock_Set(u16 clkdiv);
-void SDMMC_Send_Cmd(u8 cmdindex,u8 waitrsp,u32 arg);
-void SDMMC_Send_Data_Cfg(u32 datatimeout,u32 datalen,u8 blksize,u8 dir);
-SD_Error SD_PowerON(void);    
-SD_Error SD_PowerOFF(void);
-SD_Error SD_InitializeCards(void);
-SD_Error SD_GetCardInfo(SD_CardInfo *cardinfo);		  
-SD_Error SD_EnableWideBusOperation(u32 wmode); 
-SD_Error SD_SelectDeselect(u32 addr); 
-SD_Error SD_SendStatus(uint32_t *pcardstatus);
-SDCardState SD_GetState(void);  
-SD_Error SD_ReadBlocks(u8 *buf,long long  addr,u16 blksize,u32 nblks);   
-SD_Error SD_WriteBlocks(u8 *buf,long long addr,u16 blksize,u32 nblks); 
-SD_Error CmdError(void);  
-SD_Error CmdResp7Error(void);
-SD_Error CmdResp1Error(u8 cmd);
-SD_Error CmdResp3Error(void);
-SD_Error CmdResp2Error(void);
-SD_Error CmdResp6Error(u8 cmd,u16*prca);  
-SD_Error SDEnWideBus(u8 enx);	  
-SD_Error IsCardProgramming(u8 *pstatus); 
-SD_Error FindSCR(u16 rca,u32 *pscr);   
 
-u8 SD_ReadDisk(u8*buf,u32 sector,u32 cnt); 	//读SD卡,fatfs/usb调用
-u8 SD_WriteDisk(u8*buf,u32 sector,u32 cnt);	//写SD卡,fatfs/usb调用
+SD_Error sd_init(void);
+void sdmmc_clk_config(u16 clkdiv);
+void sdmmc_send_cmd(u8 cmdindex,u8 waitrsp,u32 arg);
+void sdmmc_send_data_config(u32 datatimeout,u32 datalen,u8 blksize,u8 dir);
+SD_Error sd_power_on(void);
+SD_Error sd_power_off(void);
+SD_Error sd_card_init(void);
+SD_Error sd_get_card_info(SD_CardInfo *cardinfo);
+SD_Error sd_widebus_config(u32 wmode); 
+SD_Error sd_select_deselect(u32 addr);
+SD_Error sd_send_status(uint32_t *pcardstatus);
+SDCardState sd_get_status(void);
+SD_Error sd_read_blocks(u8 *buf,long long  addr,u16 blksize,u32 nblks);
+SD_Error sd_write_blocks(u8 *buf,long long addr,u16 blksize,u32 nblks);
+SD_Error cmd_error(void);
+SD_Error cmd_resp7_error(void);
+SD_Error cmd_resp1_error(u8 cmd);
+SD_Error cmd_resp3_error(void);
+SD_Error cmd_resp2_error(void);
+SD_Error cmd_resp6_error(u8 cmd,u16*prca);
+SD_Error sd_widebus_enable(u8 enx);
+SD_Error is_card_programming(u8 *pstatus);
+SD_Error find_scr(u16 rca,u32 *pscr);
 
+u8 sd_read_disk(u8*buf,u32 sector,u32 cnt);   //读SD卡,fatfs/usb调用
+u8 sd_write_disk(u8*buf,u32 sector,u32 cnt);  //写SD卡,fatfs/usb调用
 
 #endif 
-
-
-
-
-

@@ -34,7 +34,7 @@ void jpeg_dma_in_callback(void)
  		hjpgd.indma_pause=1;					//标记暂停
 	}else										//有效的buf
 	{
-		JPEG_IN_DMA_Resume((u32)hjpgd.inbuf[hjpgd.inbuf_read_ptr].buf,hjpgd.inbuf[hjpgd.inbuf_read_ptr].size);//继续下一次DMA传输
+		jpeg_in_dma_resume((u32)hjpgd.inbuf[hjpgd.inbuf_read_ptr].buf,hjpgd.inbuf[hjpgd.inbuf_read_ptr].size);//继续下一次DMA传输
 	}
 }
 //JPEG输出数据流(YCBCR)回调函数,用于输出YCbCr数据流
@@ -60,7 +60,7 @@ void jpeg_dma_out_callback(void)
  		hjpgd.outdma_pause=1;					//标记暂停
 	}else										//有效的buf
 	{
-		JPEG_OUT_DMA_Resume((u32)hjpgd.outbuf[hjpgd.outbuf_write_ptr].buf,hjpgd.yuvblk_size);//继续下一次DMA传输
+		jpeg_out_dma_resume((u32)hjpgd.outbuf[hjpgd.outbuf_write_ptr].buf,hjpgd.yuvblk_size);//继续下一次DMA传输
 	}
 }
 //JPEG整个文件解码完成回调函数
@@ -73,7 +73,7 @@ void jpeg_hdrover_callback(void)
 {
 	u8 i=0;
 	hjpgd.state=JPEG_STATE_HEADEROK;			//HEADER获取成功
-	JPEG_Get_Info(&hjpgd);						//获取JPEG相关信息,包括大小,色彩空间,抽样等
+	jpeg_get_info(&hjpgd);						//获取JPEG相关信息,包括大小,色彩空间,抽样等
 	picinfo.ImgWidth=hjpgd.Conf.ImageWidth;
 	picinfo.ImgHeight=hjpgd.Conf.ImageHeight; 
 	//需要获取JPEG基本信息以后,才能根据jpeg输出大小和采样方式,来计算输出缓冲大小,并启动输出MDMA
@@ -103,8 +103,8 @@ void jpeg_hdrover_callback(void)
 	}		
 	if(hjpgd.outbuf[1].buf!=NULL)		//两个buf都申请OK
 	{
-		JPEG_OUT_DMA_Init((u32)hjpgd.outbuf[0].buf,hjpgd.yuvblk_size);//配置输出DMA
-		JPEG_OUT_DMA_Start();			//启动DMA OUT传输,开始接收JPEG解码数据流 
+		jpeg_out_dma_init((u32)hjpgd.outbuf[0].buf,hjpgd.yuvblk_size);//配置输出DMA
+		jpeg_out_dma_start();			//启动DMA OUT传输,开始接收JPEG解码数据流 
 	}
 	ai_draw_init();
 } 
@@ -124,17 +124,17 @@ u8 hjpgd_decode(u8* pname)
 	u8 fileover=0;
 	u8 i=0;
 	u8 res;  
-	res=JPEG_Core_Init(&hjpgd);						//初始化JPEG内核
+	res=jpeg_core_init(&hjpgd);						//初始化JPEG内核
 	if(res)return 1;
 	ftemp=(FIL*)mymalloc(SRAMITCM,sizeof(FIL));		//申请内存  
 	if(f_open(ftemp,(char*)pname,FA_READ)!=FR_OK)	//打开图片失败
     {
-		JPEG_Core_Destroy(&hjpgd);
+		jpeg_core_destroy(&hjpgd);
 		myfree(SRAMITCM,ftemp);						//释放内存
 		return 2;
 	} 
 	rgb565buf=mymalloc(SRAMEX,lcddev.width*lcddev.height*2);//申请整帧内存
-	JPEG_Decode_Init(&hjpgd);						//初始化硬件JPEG解码器
+	jpeg_decode_init(&hjpgd);						//初始化硬件JPEG解码器
 	for(i=0;i<JPEG_DMA_INBUF_NB;i++)
 	{
  		res=f_read(ftemp,hjpgd.inbuf[i].buf,JPEG_DMA_INBUF_LEN,&br);//填满所有输入数据缓冲区
@@ -145,12 +145,12 @@ u8 hjpgd_decode(u8* pname)
 		}
 		if(br==0)break; 
 	}
-	JPEG_IN_DMA_Init((u32)hjpgd.inbuf[0].buf,hjpgd.inbuf[0].size);	//配置输入DMA
+	jpeg_in_dma_init((u32)hjpgd.inbuf[0].buf,hjpgd.inbuf[0].size);	//配置输入DMA
 	jpeg_in_callback=jpeg_dma_in_callback;			//JPEG DMA读取数据回调函数
 	jpeg_out_callback=jpeg_dma_out_callback; 		//JPEG DMA输出数据回调函数
 	jpeg_eoc_callback=jpeg_endofcovert_callback;	//JPEG 解码结束回调函数
 	jpeg_hdp_callback=jpeg_hdrover_callback; 		//JPEG Header解码完成回调函数
- 	JPEG_IN_DMA_Start();							//启动DMA IN传输,开始解码JPEG图片 
+ 	jpeg_in_dma_start();							//启动DMA IN传输,开始解码JPEG图片 
 	while(1)
 	{ 
 		if(hjpgd.inbuf[hjpgd.inbuf_write_ptr].sta==0&&fileover==0)	//有buf为空
@@ -167,7 +167,7 @@ u8 hjpgd_decode(u8* pname)
 			}
 			if(hjpgd.indma_pause==1&&hjpgd.inbuf[hjpgd.inbuf_read_ptr].sta==1)//之前是暂停的了,继续传输
 			{
- 				JPEG_IN_DMA_Resume((u32)hjpgd.inbuf[hjpgd.inbuf_read_ptr].buf,hjpgd.inbuf[hjpgd.inbuf_read_ptr].size);	//继续下一次DMA传输
+ 				jpeg_in_dma_resume((u32)hjpgd.inbuf[hjpgd.inbuf_read_ptr].buf,hjpgd.inbuf[hjpgd.inbuf_read_ptr].size);	//继续下一次DMA传输
  				hjpgd.indma_pause=0;
 			}
 			hjpgd.inbuf_write_ptr++;
@@ -176,7 +176,7 @@ u8 hjpgd_decode(u8* pname)
 		if(hjpgd.outbuf[hjpgd.outbuf_read_ptr].sta==1)	//buf里面有数据要处理
 		{
 			SCB_CleanInvalidateDCache();				//清空D catch
-			JPEG_DMA2D_YUV2RGB_Conversion(&hjpgd,(u32*)rgb565buf);	//利用DMA2D,将YUV图像转成RGB565图像
+			jpeg_dma2d_yuv2rgb_conversion(&hjpgd,(u32*)rgb565buf);	//利用DMA2D,将YUV图像转成RGB565图像
 			SCB_CleanInvalidateDCache();				//清空D catch
 			hjpgd.outbuf[hjpgd.outbuf_read_ptr].sta=0;	//标记buf为空
 			hjpgd.outbuf[hjpgd.outbuf_read_ptr].size=0;	//数据量清空
@@ -185,7 +185,7 @@ u8 hjpgd_decode(u8* pname)
 			if(hjpgd.yuvblk_curheight>=hjpgd.Conf.ImageHeight)break;				//当前高度等于或者超过图片分辨率的高度,则说明解码完成了,直接退出.
 		}else if(hjpgd.outdma_pause==1&&hjpgd.outbuf[hjpgd.outbuf_write_ptr].sta==0)//out暂停,且当前writebuf已经为空了,则恢复out输出
 		{
- 			JPEG_OUT_DMA_Resume((u32)hjpgd.outbuf[hjpgd.outbuf_write_ptr].buf,hjpgd.yuvblk_size);//继续下一次DMA传输
+ 			jpeg_out_dma_resume((u32)hjpgd.outbuf[hjpgd.outbuf_write_ptr].buf,hjpgd.yuvblk_size);//继续下一次DMA传输
  			hjpgd.outdma_pause=0;
 		}
 		timecnt++;  
@@ -207,7 +207,7 @@ u8 hjpgd_decode(u8* pname)
 	f_close(ftemp);				//关闭文件
 	myfree(SRAMITCM,ftemp);		//释放申请的内存
 	myfree(SRAMEX,rgb565buf);	//释放内存
-	JPEG_Core_Destroy(&hjpgd); 	//结束JPEG解码,释放内存
+	jpeg_core_destroy(&hjpgd); 	//结束JPEG解码,释放内存
 	return res;
 }
 

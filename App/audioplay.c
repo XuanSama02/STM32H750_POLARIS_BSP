@@ -127,7 +127,7 @@ void audio_play(void)
 
  	while(f_opendir(&wav_dir,"0:/MUSIC"))     //打开音乐文件夹
  	{
-		Show_Str(60, 190, 240, 16, "MUSIC文件夹错误!", 16, 0);
+		show_string(60, 190, 240, 16, "MUSIC文件夹错误!", 16, 0);
 		delay_ms(200);
 		lcd_fill(60, 190, 240, 206, WHITE);  //清除显示
 		delay_ms(200);
@@ -135,7 +135,7 @@ void audio_play(void)
 	wav_tot_num = audio_get_tnum("0:/MUSIC");  //得到总有效文件数
   	while(wav_tot_num == NULL)                 //音乐文件总数为0
  	{
-		Show_Str(60, 190, 240, 16, "没有音乐文件!", 16, 0);
+		show_string(60, 190, 240, 16, "没有音乐文件!", 16, 0);
 		delay_ms(200);
 		lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
 		delay_ms(200);
@@ -145,7 +145,7 @@ void audio_play(void)
  	wav_offset_tbl = mymalloc(SRAMIN, 4*wav_tot_num);                //申请4*totwavnum个字节的内存,用于存放音乐文件off block索引
  	while(!wav_file_info || !pname || !wav_offset_tbl)               //内存分配出错
  	{
-		Show_Str(60, 190, 240, 16, "内存分配失败!", 16, 0);
+		show_string(60, 190, 240, 16, "内存分配失败!", 16, 0);
 		delay_ms(200);
 		lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
 		delay_ms(200);
@@ -179,7 +179,7 @@ void audio_play(void)
 		strcpy((char*)pname,"0:/MUSIC/");//复制路径(目录)
 		strcat((char*)pname,(const char*)wav_file_info->fname);//将文件名接在后面
  		lcd_fill(60,190,lcddev.width-1,190+16,WHITE);//清除之前的显示
-		Show_Str(60,190,lcddev.width-60,16,(u8*)wav_file_info->fname,16,0);//显示歌曲名字
+		show_string(60,190,lcddev.width-60,16,(u8*)wav_file_info->fname,16,0);//显示歌曲名字
 		audio_index_show(curindex+1,wav_tot_num);
 		key=audio_play_song(pname);//播放这个音频文件
 		if(key==KEY2_PRES)//上一曲

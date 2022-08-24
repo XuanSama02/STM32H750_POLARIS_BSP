@@ -474,21 +474,6 @@
               <FilePath>..\Drivers\BSP\MPU\mpu.c</FilePath>
             </File>
             <File>
-              <FileName>ftl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\BSP\NAND\ftl.c</FilePath>
-            </File>
-            <File>
-              <FileName>nand.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\BSP\NAND\nand.c</FilePath>
-            </File>
-            <File>
-              <FileName>nandtester.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\BSP\NAND\nandtester.c</FilePath>
-            </File>
-            <File>
               <FileName>pcf8574.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\BSP\PCF8574\pcf8574.c</FilePath>

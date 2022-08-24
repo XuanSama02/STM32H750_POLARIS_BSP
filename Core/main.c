@@ -18,16 +18,10 @@ int main(void)
     es8388_output_config(1, 1);       //DAC选择通道输出
     es8388_headphone_vol_config(25);  //调节耳机音量
     es8388_speaker_vol_config(15);    //调节喇叭音量
-    my_mem_init(SRAMIN);              //初始化内部内存池(AXI)
-    my_mem_init(SRAMEX);              //初始化外部内存池(SDRAM)
-    my_mem_init(SRAM12);              //初始化SRAM12内存池(SRAM1+SRAM2)
-    my_mem_init(SRAM4);               //初始化SRAM4内存池(SRAM4)
-    my_mem_init(SRAMDTCM);            //初始化DTCM内存池(DTCM)
-    my_mem_init(SRAMITCM);            //初始化ITCM内存池(ITCM)
+    my_mem_init_all();                //初始化片上内存与板载内存
     exfuns_init();                    //为fatfs相关变量申请内存
     f_mount(fs[0], "0:", 1);          //挂载SD卡
-    f_mount(fs[1], "1:", 1);          //挂载SPI FLASH.
-    f_mount(fs[2], "2:", 1);          //挂载NAND FLASH.
+    f_mount(fs[1], "1:", 1);          //挂载SPI FLASH
 
     lcd_color_point = RED;
 
@@ -42,12 +36,13 @@ int main(void)
     lcd_color_point = RED;
 
     ltdc_display_direction(1);  //横屏模式
-    Show_Str(60,  50, 200, 16, "北极星H750/F750开发板",  16, 0);
-    Show_Str(60,  70, 200, 16, "视频播放器实验",         16, 0);
-    Show_Str(60,  90, 200, 16, "正点原子@ALIENTEK",      16, 0);
-    Show_Str(60, 110, 200, 16, "2019年5月16日",          16, 0);
-    Show_Str(60, 130, 200, 16, "KEY0:NEXT   KEY2:PREV", 16, 0);
-    Show_Str(60, 150, 200, 16, "KEY_UP:FF   KEY1:REW",  16, 0);
+
+    show_string(60,  50, 200, 16, "北极星H750/F750开发板",  16, 0);
+    show_string(60,  70, 200, 16, "视频播放器实验",         16, 0);
+    show_string(60,  90, 200, 16, "正点原子@ALIENTEK",      16, 0);
+    show_string(60, 110, 200, 16, "2019年5月16日",          16, 0);
+    show_string(60, 130, 200, 16, "KEY0:NEXT   KEY2:PREV", 16, 0);
+    show_string(60, 150, 200, 16, "KEY_UP:FF   KEY1:REW",  16, 0);
     delay_ms(1500);
 
     tim3_init(10000-1, 20000-1);  //10Khz计数,1秒钟中断一次

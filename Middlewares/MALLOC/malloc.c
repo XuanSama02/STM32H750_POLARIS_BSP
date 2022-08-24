@@ -78,6 +78,20 @@ void my_mem_init(u8 memx)
 }
 
 /**
+ * @brief 初始化北极星开发板全部内存管理
+ * 
+ */
+void my_mem_init_all(void)
+{
+    my_mem_init(SRAMIN);    //初始化内部内存池(AXI)
+    my_mem_init(SRAMEX);    //初始化外部内存池(SDRAM)
+    my_mem_init(SRAM12);    //初始化SRAM12内存池(SRAM1+SRAM2)
+    my_mem_init(SRAM4);     //初始化SRAM4内存池(SRAM4)
+    my_mem_init(SRAMDTCM);  //初始化DTCM内存池(DTCM)
+    my_mem_init(SRAMITCM);  //初始化ITCM内存池(ITCM)
+}
+
+/**
  * @brief 获取内存使用率
  * 
  * @param memx 所属内存块

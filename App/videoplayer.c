@@ -97,7 +97,7 @@ void video_time_show(FIL *favi,AVI_INFO *aviinfo)
 		oldsec=cursec; 
 		lcd_color_point=BLUE; 
 		sprintf((char*)buf,"播放时间:%02d:%02d:%02d/%02d:%02d:%02d",cursec/3600,(cursec%3600)/60,cursec%60,totsec/3600,(totsec%3600)/60,totsec%60);
- 		Show_Str(10,90,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
+ 		show_string(10,90,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
 		myfree(SRAMIN,buf);		
 	} 		 
 }
@@ -109,9 +109,9 @@ void video_info_show(AVI_INFO *aviinfo)
 	buf=mymalloc(SRAMIN,100);//申请100字节内存 
 	lcd_color_point=RED; 
 	sprintf((char*)buf,"声道数:%d,采样率:%d",aviinfo->Channels,aviinfo->SampleRate*10); 
- 	Show_Str(10,50,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
+ 	show_string(10,50,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
 	sprintf((char*)buf,"帧率:%d帧",1000/(aviinfo->SecPerFrame/1000)); 
- 	Show_Str(10,70,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
+ 	show_string(10,70,lcddev.width-10,16,buf,16,0);	//显示歌曲名字
 	myfree(SRAMIN,buf);	  
 }
 //视频基本信息显示
@@ -124,9 +124,9 @@ void video_bmsg_show(u8* name,u16 index,u16 total)
 	buf=mymalloc(SRAMIN,100);//申请100字节内存
 	lcd_color_point=RED;
 	sprintf((char*)buf,"文件名:%s",name);
-	Show_Str(10,10,lcddev.width-10,16,buf,16,0);//显示文件名
+	show_string(10,10,lcddev.width-10,16,buf,16,0);//显示文件名
 	sprintf((char*)buf,"索引:%d/%d",index,total);	
-	Show_Str(10,30,lcddev.width-10,16,buf,16,0);//显示索引 		  	  
+	show_string(10,30,lcddev.width-10,16,buf,16,0);//显示索引 		  	  
 	myfree(SRAMIN,buf);		
 }
 
@@ -145,7 +145,7 @@ void video_play(void)
 	
  	while(f_opendir(&vdir,"0:/VIDEO"))//打开视频文件夹
  	{	    
-		Show_Str(60,190,240,16,"VIDEO文件夹错误!",16,0);
+		show_string(60,190,240,16,"VIDEO文件夹错误!",16,0);
 		delay_ms(200);				  
 		lcd_fill(60,190,240,206,WHITE);//清除显示	     
 		delay_ms(200);				  
@@ -153,7 +153,7 @@ void video_play(void)
 	totavinum=video_get_tnum("0:/VIDEO"); //得到总有效文件数
   	while(totavinum==NULL)//视频文件总数为0		
  	{	    
-		Show_Str(60,190,240,16,"没有视频文件!",16,0);
+		show_string(60,190,240,16,"没有视频文件!",16,0);
 		delay_ms(200);				  
 		lcd_fill(60,190,240,146,WHITE);//清除显示	     
 		delay_ms(200);				  
@@ -163,7 +163,7 @@ void video_play(void)
  	voffsettbl=mymalloc(SRAMIN,4*totavinum);			//申请4*totavinum个字节的内存,用于存放视频文件索引
  	while(vfileinfo==NULL||pname==NULL||voffsettbl==NULL)//内存分配出错
  	{	    
-		Show_Str(60,190,240,16,"内存分配失败!",16,0);
+		show_string(60,190,240,16,"内存分配失败!",16,0);
 		delay_ms(200);				  
 		lcd_fill(60,190,240,146,WHITE);//清除显示	     
 		delay_ms(200);				  
