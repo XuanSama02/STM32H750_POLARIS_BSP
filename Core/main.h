@@ -12,7 +12,6 @@
  * 1.0：包含了北极星开发板头文件
  */
 
-#include "main.h"
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"

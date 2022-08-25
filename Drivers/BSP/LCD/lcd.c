@@ -134,7 +134,7 @@ void lcd_draw_point(u16 x, u16 y)
  */
 void lcd_draw_point_fast(u16 x, u16 y, u32 color)
 {
-    ltdc_draw_point(x,y,color);
+    ltdc_draw_point(x, y, color);
 }
 
 /**
@@ -391,7 +391,7 @@ void lcd_show_char(u16 x, u16 y, u8 num, u8 size, u8 mode)
             {
                 y = y0;
                 x++;
-                if(x>=lcddev.width)  //超区域,退出
+                if(x >= lcddev.width)  //超区域,退出
                     return;
                 break;
             }

@@ -6,10 +6,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/18
+ * @date:    2022/08/20
  * @brif:    北极星开发板LTDC驱动
  * @version:
- * 1.0：实现了北极星开发板LTDC驱动
+ * 2022/08/20: 实现了北极星开发板LTDC驱动
  */
 
 //LCD显示配置:

@@ -7,10 +7,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/18
+ * @date:    2022/08/20
  * @brif:    北极星开发板LCD驱动
  * @version:
- * 1.0：实现了北极星开发板LCD驱动,仅支持RGB屏,去除了对MCU屏的支持
+ * 2022/08/20: 实现了北极星开发板LCD驱动,仅支持RGB屏,去除了对MCU屏的支持
  */
 
 //LCD重要参数集

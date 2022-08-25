@@ -8,8 +8,8 @@
  * @date:    2022/08/18
  * @brif:    北极星开发板delay函数实现
  * @version:
- * 1.0：实现了北极星开发板毫秒与微秒两种延时函数，支持UCOSII与UCOSIII，FreeRTOS需要进行进一步移植
- *      没有使用HAL_Delay,如果中断优先级配置不合适,HAL_Delay容易进入死循环
+ * 2022/08/18: 实现了北极星开发板毫秒与微秒两种延时函数，支持UCOSII与UCOSIII，FreeRTOS需要进行进一步移植
+ *             没有使用HAL_Delay,如果中断优先级配置不合适,HAL_Delay容易进入死循环
  */
 
 void delay_init(u16 SYSCLK);

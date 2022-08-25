@@ -6,10 +6,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/18
+ * @date:    2022/08/23
  * @brif:    北极星开发板汉字显示驱动驱动
  * @version:
- * 1.0：实现了北极星开发板汉字显示驱动
+ * 2022/08/23: 实现了北极星开发板汉字显示驱动
  */
 
 void get_word_mat(unsigned char *code, unsigned char *mat, u8 size);              //得到汉字的点阵码

@@ -19,6 +19,11 @@
         "diskio.h": "c",
         "text.h": "c",
         "fontupd.h": "c",
-        "usmart.h": "c"
+        "usmart.h": "c",
+        "fattester.h": "c",
+        "avi.h": "c",
+        "usart.h": "c",
+        "ff.h": "c",
+        "cstdio": "c"
     }
 }

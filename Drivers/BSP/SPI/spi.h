@@ -9,7 +9,7 @@
  * @date:    2022/08/18
  * @brif:    北极星开发板SPI驱动
  * @version:
- * 1.0：实现了北极星开发板SPI协议读写
+ * 2022/08/18: 实现了北极星开发板SPI协议读写
  */
 
 extern SPI_HandleTypeDef SPI2_Handler;  //SPI句柄

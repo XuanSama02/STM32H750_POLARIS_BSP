@@ -9,7 +9,7 @@
  * @date:    2022/08/18
  * @brif:    北极星开发板MPU驱动
  * @version:
- * 1.0：实现了北极星开发板MPU驱动
+ * 2022/08/18: 实现了北极星开发板MPU驱动
  */ 	
 
 u8 mpu_protection_config(u32 baseaddr, u32 size, u32 rnum, u8 ap, u8 sen, u8 cen, u8 ben);

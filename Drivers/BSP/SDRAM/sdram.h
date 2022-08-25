@@ -9,7 +9,7 @@
  * @date:    2022/08/18
  * @brif:    北极星开发板SDRAM驱动
  * @version:
- * 1.0：实现了北极星开发板SDRAM初始化与读写功能
+ * 2022/08/18: 实现了北极星开发板SDRAM初始化与读写功能
  */
 
 extern SDRAM_HandleTypeDef SDRAM_Handler;  //SDRAM句柄

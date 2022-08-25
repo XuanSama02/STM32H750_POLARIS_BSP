@@ -6,10 +6,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/16
+ * @date:    2022/08/21
  * @brif:    北极星开发板JPEG硬件解码器驱动
  * @version:
- * 1.0：包含了北极星开发板JPEG的硬件解码
+ * 2022/08/21: 包含了北极星开发板JPEG的硬件解码
  */
 
 #define JPEG_DMA_INBUF_LEN  4096  //单个DMA IN BUF的大小

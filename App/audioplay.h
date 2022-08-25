@@ -8,10 +8,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/16
- * @brif:    北极星开发板音乐播放
+ * @date:    2022/08/25
+ * @brif:    北极星开发板音乐播放应用
  * @version:
- * 1.0：实现了WAV音乐播放功能
+ * 2022/08/25: 实现了WAV音乐播放功能
  */
 
 //音乐播放控制器

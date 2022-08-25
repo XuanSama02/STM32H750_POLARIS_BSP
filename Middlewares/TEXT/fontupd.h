@@ -6,10 +6,10 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/18
+ * @date:    2022/08/23
  * @brif:    北极星开发板字库更新驱动
  * @version:
- * 1.0：实现了北极星开发板字库更新
+ * 2022/08/23: 实现了北极星开发板字库更新
  */
 
 //Apollo STM32开发板是从25M地址以后开始存放字库

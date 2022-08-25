@@ -6,10 +6,12 @@
 /**
  * https://github.com/XuanSama02
  * @auther:  XuanSama02
- * @date:    2022/08/18
+ * @date:    2022/08/19
  * @brif:    北极星开发板内存管理
  * @version:
- * 1.0：实现了北极星开发板内存管理
+ * 2022/08/19: 实现了北极星开发板内存管理
+ * 2022/08/19: 修改LTDC显存大小(2MB->4MB)
+ * 2022/08/25: 尝试分配SRAM3失败,触发HardFault_Handler(),原因未知,代码已回滚2022/08/19
  */
 
 #ifndef NULL
@@ -19,7 +21,7 @@
 //定义六个内存池
 #define SRAMIN    0  //AXI内存池,AXI共512KB 
 #define SRAMEX    1  //外部内存池(SDRAM),SDRAM共32MB
-#define SRAM12    2  //SRAM1/2/3内存池,SRAM1+SRAM2,共256KB
+#define SRAM12    2  //SRAM1/2内存池,SRAM1+SRAM2,共256KB
 #define SRAM4     3  //SRAM4内存池,SRAM4共64KB
 #define SRAMDTCM  4  //DTCM内存池,DTCM共128KB,此部分内存仅CPU和MDMA(通过AHBS)可以访问
 #define SRAMITCM  5  //ITCM内存池,DTCM共 64KB,此部分内存仅CPU和MDMA(通过AHBS)可以访问
@@ -33,7 +35,7 @@
 
 //mem2内存参数设定.mem2是外部的SDRAM内存
 #define MEM2_BLOCK_SIZE        64                             //内存块大小为64字节
-#define MEM2_MAX_SIZE          51200*1024                     //最大管理内存28912K,外扩SDRAM总共64MB,LTDC占了2MB,还剩62MB
+#define MEM2_MAX_SIZE          51200*1024                     //最大管理内存28912K,外扩SDRAM总共64MB,LTDC占了4MB,还剩60MB
 #define MEM2_ALLOC_TABLE_SIZE  MEM2_MAX_SIZE/MEM2_BLOCK_SIZE  //内存表大小
 
 //mem3内存参数设定.mem3是H7内部的SRAM1+SRAM2内存
