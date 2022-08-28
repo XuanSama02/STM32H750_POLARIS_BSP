@@ -24,6 +24,8 @@
         "avi.h": "c",
         "usart.h": "c",
         "ff.h": "c",
-        "cstdio": "c"
+        "cstdio": "c",
+        "led.h": "c",
+        "sdram.h": "c"
     }
 }

@@ -98,19 +98,19 @@ void sdram_init_sequence(SDRAM_HandleTypeDef *hsdram)
     bit3为指定突发访问的类型，bit4~bit6为CAS值，bit7和bit8为运行模式
     bit9为指定的写突发模式，bit10和bit11位保留位
     */
-    temp=(u32)SDRAM_MODEREG_BURST_LENGTH_4          |  //设置突发长度:1(可以是1/2/4/8)
-              SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |  //设置突发类型:连续(可以是连续/交错)
-              SDRAM_MODEREG_CAS_LATENCY_2           |  //设置CAS值:2(可以是2/3)
-              SDRAM_MODEREG_OPERATING_MODE_STANDARD |  //设置操作模式:0,标准模式
-              SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;    //设置突发写模式:1,单点访问
-    sdram_send_cmd(0,FMC_SDRAM_CMD_LOAD_MODE,1,temp);  //设置SDRAM的模式寄存器
+    temp=(u32)SDRAM_MODEREG_BURST_LENGTH_4          |    //设置突发长度:1(可以是1/2/4/8)
+              SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |    //设置突发类型:连续(可以是连续/交错)
+              SDRAM_MODEREG_CAS_LATENCY_2           |    //设置CAS值:2(可以是2/3)
+              SDRAM_MODEREG_OPERATING_MODE_STANDARD |    //设置操作模式:0,标准模式
+              SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;      //设置突发写模式:1,单点访问
+    sdram_send_cmd(0,FMC_SDRAM_CMD_LOAD_MODE, 1, temp);  //设置SDRAM的模式寄存器
     /*
     刷新频率计数器(以SDCLK频率计数),计算方法:
     COUNT = SDRAM刷新周期/行数-20 = SDRAM刷新周期(us)*SDCLK频率(Mhz)/行数
     我们使用的SDRAM刷新周期为64ms, SDCLK=200/2=100Mhz, 行数为8192(2^13)
-    所以,COUNT = 64*1000*100/8192-20 = 677  (W9825G6JH-6)
+    所以,COUNT = 64*1000*100/8192-20 = 761  (W9825G6JH-6),原子:677
     */
-    HAL_SDRAM_ProgramRefreshRate(&SDRAM_Handler,677);
+    HAL_SDRAM_ProgramRefreshRate(&SDRAM_Handler, 761);
 }
 
 /**

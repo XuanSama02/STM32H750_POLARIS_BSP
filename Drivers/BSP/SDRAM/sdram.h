@@ -10,6 +10,8 @@
  * @brif:    北极星开发板SDRAM驱动
  * @version:
  * 2022/08/18: 实现了北极星开发板SDRAM初始化与读写功能
+ * 
+ * 2022/08/29: 修改了频率刷新计数器,根据正点原子提供的算法,正确值=761,但正点原子使用的值是677
  */
 
 extern SDRAM_HandleTypeDef SDRAM_Handler;  //SDRAM句柄

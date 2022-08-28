@@ -87,10 +87,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         //配置GPIO_PA10(RX)
         ymx_gpio_init.Pin       = GPIO_PIN_10;           //PA10
         HAL_GPIO_Init(GPIOA, &ymx_gpio_init);            //初始化PA10
-#if EN_USART1_RX
-        HAL_NVIC_EnableIRQ(USART1_IRQn);                 //使能USART1中断通道
-        HAL_NVIC_SetPriority(USART1_IRQn,3,3);           //抢占优先级3，子优先级3
-#endif
+    #if EN_USART1_RX
+            HAL_NVIC_EnableIRQ(USART1_IRQn);             //使能USART1中断通道
+            HAL_NVIC_SetPriority(USART1_IRQn, 3, 3);     //抢占优先级3，子优先级3
+    #endif
     }
 }
 
