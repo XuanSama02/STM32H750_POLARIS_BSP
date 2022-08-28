@@ -24,30 +24,18 @@ void ltdc_init(void)
     u16 lcd_id = 0;
     lcd_id = ltdc_panel_id();  //读取LCD面板ID
     //根据读取到的LCD进行LTDC参数配置
-    if(lcd_id == 0X4342)  //4.3寸480*272 RGB屏
-    {
-        lcdltdc.pwidth  = 480;  //面板宽度,单位:像素
-        lcdltdc.pheight = 272;  //面板高度,单位:像素
-        lcdltdc.hsw     = 1;    //水平同步宽度
-        lcdltdc.vsw     = 1;    //垂直同步宽度
-        lcdltdc.hbp     = 40;   //水平后廊
-        lcdltdc.vbp     = 8;    //垂直后廊
-        lcdltdc.hfp     = 5;    //水平前廊
-        lcdltdc.vfp     = 8;    //垂直前廊
-        ltdc_clk_config(5, 160, 88);  //设置像素时钟:9Mhz
-        //其他参数待定
-    }
-    else if(lcd_id == 0X7084)  //7寸800*480 RGB屏
+    if(lcd_id == 0X4384)  //4.3寸800*480 RGB屏
     {
         lcdltdc.pwidth  = 800;  //面板宽度,单位:像素
         lcdltdc.pheight = 480;  //面板高度,单位:像素
-        lcdltdc.hsw     = 1;    //水平同步宽度
-        lcdltdc.vsw     = 1;    //垂直同步宽度
-        lcdltdc.hbp     = 46;   //水平后廊
-        lcdltdc.vbp     = 23;   //垂直后廊
-        lcdltdc.hfp     = 210;  //水平前廊
-        lcdltdc.vfp     = 22;   //垂直前廊
-        ltdc_clk_config(5, 160, 24);  //设置像素时钟 33M(如果开双显,需要降低DCLK到:18.75Mhz, pll3r=43,比较好)
+        lcdltdc.hbp     = 88;   //水平后廊
+        lcdltdc.hfp     = 40;   //水平前廊
+        lcdltdc.hsw     = 48;   //水平同步宽度
+        lcdltdc.vbp     = 32;   //垂直后廊
+        lcdltdc.vfp     = 13;   //垂直前廊
+        lcdltdc.vsw     = 3;    //垂直同步宽度
+        ltdc_clk_config(5, 160, 24);  //设置像素时钟 33M
+        //其他参数待定
     }
     else if(lcd_id == 0X7016)  //7寸1024*600 RGB屏
     {
@@ -62,25 +50,36 @@ void ltdc_init(void)
         ltdc_clk_config(5, 160, 18);  //设置像素时钟 45Mhz
         //其他参数待定
     }
-    else if(lcd_id == 0X7018)  //7寸1280*800 RGB屏
+    #if(LCD_43_480_272_ENABLE == 1)
+    else if(lcd_id == 0X4342)  //4.3寸480*272 RGB屏
     {
-        lcdltdc.pwidth  = 1280;  //面板宽度,单位:像素
-        lcdltdc.pheight = 800;   //面板高度,单位:像素
+        lcdltdc.pwidth  = 480;  //面板宽度,单位:像素
+        lcdltdc.pheight = 272;  //面板高度,单位:像素
+        lcdltdc.hsw     = 1;    //水平同步宽度
+        lcdltdc.vsw     = 1;    //垂直同步宽度
+        lcdltdc.hbp     = 40;   //水平后廊
+        lcdltdc.vbp     = 8;    //垂直后廊
+        lcdltdc.hfp     = 5;    //水平前廊
+        lcdltdc.vfp     = 8;    //垂直前廊
+        ltdc_clk_config(5, 160, 88);  //设置像素时钟:9Mhz
         //其他参数待定
     }
-    else if(lcd_id == 0X4384)  //4.3寸800*480 RGB屏
+    #endif
+    #if(LCD_70_800_480_ENABLE == 1)
+    else if(lcd_id == 0X7084)  //7寸800*480 RGB屏
     {
         lcdltdc.pwidth  = 800;  //面板宽度,单位:像素
         lcdltdc.pheight = 480;  //面板高度,单位:像素
-        lcdltdc.hbp     = 88;   //水平后廊
-        lcdltdc.hfp     = 40;   //水平前廊
-        lcdltdc.hsw     = 48;   //水平同步宽度
-        lcdltdc.vbp     = 32;   //垂直后廊
-        lcdltdc.vfp     = 13;   //垂直前廊
-        lcdltdc.vsw     = 3;    //垂直同步宽度
-        ltdc_clk_config(5, 160, 24);  //设置像素时钟 33M
-        //其他参数待定
+        lcdltdc.hsw     = 1;    //水平同步宽度
+        lcdltdc.vsw     = 1;    //垂直同步宽度
+        lcdltdc.hbp     = 46;   //水平后廊
+        lcdltdc.vbp     = 23;   //垂直后廊
+        lcdltdc.hfp     = 210;  //水平前廊
+        lcdltdc.vfp     = 22;   //垂直前廊
+        ltdc_clk_config(5, 160, 24);  //设置像素时钟 33M(如果开双显,需要降低DCLK到:18.75Mhz, pll3r=43,比较好)
     }
+    #endif
+    #if(LCD_101_1280_800_ENABLE == 1)
     else if(lcd_id == 0X1018)  //10.1寸1280*800 RGB屏
     {
         lcdltdc.pwidth  = 1280;  //面板宽度,单位:像素
@@ -93,6 +92,8 @@ void ltdc_init(void)
         lcdltdc.vsw     = 3;     //垂直同步宽度
         ltdc_clk_config(5, 160, 16);  //设置像素时钟 50MHz
     }
+    #endif
+    #if(LCD_VGA_ENBALE == 1)
     else if(lcd_id == 0XA001)  //接VGA显示器: 1366*768
     {
         lcdltdc.pwidth  = 1366;  //面板宽 度,单位:像素
@@ -177,6 +178,7 @@ void ltdc_init(void)
         lcdltdc.vfp     = 2;    //垂直前廊
         ltdc_clk_config(5, 160, 62);  //设置像素时钟 12.75Mhz
     }
+    #endif
     //确认显示的长宽像素
     lcddev.width  = lcdltdc.pwidth;
     lcddev.height = lcdltdc.pheight;
@@ -284,8 +286,8 @@ u16 ltdc_panel_id(void)
     ymx_gpio_init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;  //高速
     HAL_GPIO_Init(GPIOJ, &ymx_gpio_init);
 
-    ymx_gpio_init.Pin=GPIO_PIN_2|GPIO_PIN_6;  //PK2,6
-    HAL_GPIO_Init(GPIOK, &ymx_gpio_init);     //初始化
+    ymx_gpio_init.Pin   = GPIO_PIN_2|GPIO_PIN_6;  //PK2,6
+    HAL_GPIO_Init(GPIOK, &ymx_gpio_init);
     //读取LCD的ID
     lcd_id  = (u8)HAL_GPIO_ReadPin(GPIOJ, GPIO_PIN_6);     //读取M0
     lcd_id |= (u8)HAL_GPIO_ReadPin(GPIOK, GPIO_PIN_2)<<1;  //读取M1
@@ -296,7 +298,7 @@ u16 ltdc_panel_id(void)
         return 0X7084;
     else if(lcd_id == 2)  //7寸屏,1024*600分辨率
         return 0X7016;
-    else if(lcd_id == 3)  //7寸屏,1280*800分辨率
+    else if(lcd_id == 3)  //7寸屏,1280*800分辨率(已绝版)
         return 0X7018;
     else if(lcd_id == 4)  //4.3寸屏,800*480分辨率
         return 0X4384;

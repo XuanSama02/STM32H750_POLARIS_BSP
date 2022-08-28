@@ -10,7 +10,18 @@
  * @brif:    北极星开发板LTDC驱动
  * @version:
  * 2022/08/20: 实现了北极星开发板LTDC驱动
+ * 
+ * 2022/08/29: 去除了7寸1280*800屏幕的支持(已绝版),
+ *             添加了宏定义来选择性支持RGB屏,减小代码体积(Keil Code:56312->55868)
  */
+
+//LED支持宏定义:
+
+#define LCD_43_480_272_ENABLE   0  //4.3寸480*272 RGB屏
+#define LCD_70_800_480_ENABLE   0  //7寸800*480 RGB屏
+#define LCD_101_1280_800_ENABLE 0  //10.1寸1280*800 RGB屏
+#define LCD_VGA_ENBALE          0  //VGA显示器模块
+
 
 //LCD显示配置:
 

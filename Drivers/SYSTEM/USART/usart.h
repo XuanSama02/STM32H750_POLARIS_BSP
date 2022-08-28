@@ -11,6 +11,8 @@
  * @brif:    北极星开发板串口驱动
  * @version:
  * 2022/08/18: 实现了北极星开发板串口驱动,串口打印,不需要勾选use MicroLIB
+ * 
+ * 2022/08/29: 修改uart_init()函数名为uart1_init(),更规范
  */
 
 #define USART_REC_LEN 200  //定义最大接收字节数:200
@@ -23,6 +25,6 @@ extern UART_HandleTypeDef UART1_Handler; //UART句柄
 #define RXBUFFERSIZE 1              //缓存大小
 extern u8 aRxBuffer[RXBUFFERSIZE];  //HAL库USART接收Buffer
 
-void uart_init(u32 baud_rate);
+void uart1_init(u32 baud_rate);
 
 #endif

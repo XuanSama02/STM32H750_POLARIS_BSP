@@ -48,7 +48,7 @@ UART_HandleTypeDef UART1_Handler; //UART句柄
  * 
  * @param baud_rate 波特率
  */
-void uart_init(u32 baud_rate)
+void uart1_init(u32 baud_rate)
 {
     //UART初始化设置
     UART1_Handler.Instance        = USART1;               //USART1

@@ -7,7 +7,7 @@ int main(void)
     HAL_Init();                       //初始化HAL库
     stm32_clock_init(160, 5, 2, 4);   //设置时钟,400Mhz
     delay_init(400);                  //延时初始化
-    uart_init(115200);                //串口初始化
+    uart1_init(115200);               //串口初始化
     led_init();                       //初始化LED
     key_init();                       //初始化按键
     sdram_init();                     //初始化SDRAM
