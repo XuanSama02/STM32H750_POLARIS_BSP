@@ -26,6 +26,8 @@
         "ff.h": "c",
         "cstdio": "c",
         "led.h": "c",
-        "sdram.h": "c"
+        "sdram.h": "c",
+        "videoplay.h": "c",
+        "videoplayer.h": "c"
     }
 }

@@ -14,6 +14,33 @@
  * 2022/08/29: 绘制了时钟树图
  */
 
+#include "sys.h"
+#include "delay.h"
+#include "usart.h"
+#include "led.h"
+#include "key.h"
+#include "ltdc.h"
+#include "lcd.h"
+#include "sdram.h"
+//#include "usmart.h"
+#include "pcf8574.h"
+#include "mpu.h"
+#include "malloc.h"
+#include "w25qxx.h"
+#include "sdmmc_sdcard.h"
+//#include "nand.h"
+//#include "ftl.h"
+#include "ff.h"
+#include "exfuns.h"
+#include "fontupd.h"
+#include "text.h"
+#include "es8388.h"
+#include "timer.h"
+#include "jpegcodec.h"
+#include "audioplay.h"
+#include "videoplayer.h"
+#include "string.h"
+
 /***************************************400MHz***************************************/
 /*
 时钟树配置(400MHz):
@@ -107,32 +134,5 @@ SYSCLK(480MHz) ->|-> 480MHz -> CPU Clock
 note: 所有TIM频率为240MHz
 */
 /***************************************480MHz***************************************/
-
-#include "sys.h"
-#include "delay.h"
-#include "usart.h"
-#include "led.h"
-#include "key.h"
-#include "ltdc.h"
-#include "lcd.h"
-#include "sdram.h"
-#include "usmart.h"
-#include "pcf8574.h"
-#include "mpu.h"
-#include "malloc.h"
-#include "w25qxx.h"
-#include "sdmmc_sdcard.h"
-//#include "nand.h"
-//#include "ftl.h"
-#include "ff.h"
-#include "exfuns.h"
-#include "fontupd.h"
-#include "text.h"
-#include "es8388.h"
-#include "timer.h"
-#include "jpegcodec.h"
-#include "audioplay.h"
-#include "videoplayer.h"
-#include "string.h"
 
 #endif

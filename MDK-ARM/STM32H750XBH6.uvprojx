@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32H750xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\App;..\Core;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\STM32H7xx\Include;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Drivers\SYSTEM\DELAY;..\Drivers\SYSTEM\SYS;..\Drivers\SYSTEM\USART;..\Drivers\BSP\H750XBH6;..\Drivers\BSP\24CXX;..\Drivers\BSP\AP3216C;..\Drivers\BSP\DCMI;..\Drivers\BSP\DHT11;..\Drivers\BSP\DS18B20;..\Drivers\BSP\ES8388;..\Drivers\BSP\IIC;..\Drivers\BSP\JPEGCODEC;..\Drivers\BSP\KEY;..\Drivers\BSP\LED;..\Drivers\BSP\LCD;..\Drivers\BSP\MPU;..\Drivers\BSP\NAND;..\Drivers\BSP\NRF24L01;..\Drivers\BSP\OV5640;..\Drivers\BSP\PCF8574;..\Drivers\BSP\RTC;..\Drivers\BSP\SAI;..\Drivers\BSP\SDMMC;..\Drivers\BSP\SDRAM;..\Drivers\BSP\SPI;..\Drivers\BSP\TIMER;..\Drivers\BSP\USART2;..\Drivers\BSP\W25QXX;..\Middlewares\AUDIOCODEC\wav;..\Middlewares\FATFS\exfuns;..\Middlewares\FATFS\source;..\Middlewares\MALLOC;..\Middlewares\MJPEG;..\Middlewares\PICTURE;..\Middlewares\TEXT;..\Middlewares\USMART</IncludePath>
+              <IncludePath>..\App;..\Core;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\STM32H7xx\Include;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Drivers\SYSTEM\DELAY;..\Drivers\SYSTEM\SYS;..\Drivers\SYSTEM\USART;..\Drivers\BSP\H750XBH6;..\Drivers\BSP\24CXX;..\Drivers\BSP\AP3216C;..\Drivers\BSP\DCMI;..\Drivers\BSP\DHT11;..\Drivers\BSP\DS18B20;..\Drivers\BSP\ES8388;..\Drivers\BSP\IIC;..\Drivers\BSP\JPEGCODEC;..\Drivers\BSP\KEY;..\Drivers\BSP\LED;..\Drivers\BSP\LCD;..\Drivers\BSP\MPU;..\Drivers\BSP\NAND;..\Drivers\BSP\NRF24L01;..\Drivers\BSP\OV5640;..\Drivers\BSP\PCF8574;..\Drivers\BSP\RTC;..\Drivers\BSP\SAI;..\Drivers\BSP\SDMMC;..\Drivers\BSP\SDRAM;..\Drivers\BSP\SPI;..\Drivers\BSP\TIMER;..\Drivers\BSP\USART2;..\Drivers\BSP\W25QXX;..\Middlewares\AUDIOCODEC\wav;..\Middlewares\FATFS\exfuns;..\Middlewares\FATFS\source;..\Middlewares\MALLOC;..\Middlewares\MJPEG;..\Middlewares\PICTURE;..\Middlewares\TEXT</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -771,22 +771,50 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Middlewares/USMART</GroupName>
+          <GroupName>QSPI_Flash</GroupName>
           <Files>
             <File>
-              <FileName>usmart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\USMART\usmart.c</FilePath>
-            </File>
-            <File>
-              <FileName>usmart_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\USMART\usmart_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>usmart_str.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\USMART\usmart_str.c</FilePath>
+              <FileName>qspi_code_scf.scf</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\SCRIPT\qspi_code_scf.scf</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>0</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Aads>
+                    <interw>2</interw>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <thumb>2</thumb>
+                    <SplitLS>2</SplitLS>
+                    <SwStkChk>2</SwStkChk>
+                    <NoWarn>2</NoWarn>
+                    <uSurpInc>2</uSurpInc>
+                    <useXO>2</useXO>
+                    <ClangAsOpt>0</ClangAsOpt>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Aads>
+                </FileArmAds>
+              </FileOption>
             </File>
           </Files>
         </Group>

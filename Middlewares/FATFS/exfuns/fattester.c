@@ -1,6 +1,6 @@
 #include "fattester.h"
 #include "sdmmc_sdcard.h"
-#include "usmart.h"
+//#include "usmart.h"
 #include "usart.h"
 #include "exfuns.h"
 #include "malloc.h"

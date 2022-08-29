@@ -14,6 +14,8 @@
  * 2022/08/25: 实现了视频播放功能
  */
 
+#define VIDEO_ONLY 1
+
 #define AVI_AUDIO_BUF_SIZE  1024*5    //定义avi解码时,音频buf大小.
 #define AVI_VIDEO_BUF_SIZE  1024*260  //定义avi解码时,视频buf大小.一般等于AVI_MAX_FRAME_SIZE的大小
 

@@ -76,6 +76,8 @@ u16 video_get_tnum(u8 *path)
  */
 void video_time_show(FIL *favi, AVI_INFO *aviinfo)
 {	 
+    #if(VIDEO_ONLY != 1)
+
     static u32 oldsec;  //上一次的播放时间
     u8* buf;
     u32 totsec = 0;  //video文件总时间
@@ -92,6 +94,8 @@ void video_time_show(FIL *favi, AVI_INFO *aviinfo)
         show_string(10, 90, lcddev.width-10, 16, buf, 16, 0);  //显示歌曲名字
         myfree(SRAMIN, buf);
     }
+
+    #endif
 }
 
 /**
@@ -101,6 +105,8 @@ void video_time_show(FIL *favi, AVI_INFO *aviinfo)
  */
 void video_info_show(AVI_INFO *aviinfo)
 {
+    #if(VIDEO_ONLY != 1)
+
     u8 *buf;
     buf = mymalloc(SRAMIN, 100);  //申请100字节内存
     lcd_color_point = RED;
@@ -109,6 +115,8 @@ void video_info_show(AVI_INFO *aviinfo)
     sprintf((char*)buf, "帧率:%d帧", 1000/(aviinfo->SecPerFrame/1000));
     show_string(10, 70, lcddev.width-10, 16, buf, 16, 0);  //显示歌曲名字
     myfree(SRAMIN, buf);
+
+    #endif
 }
 
 /**
@@ -120,6 +128,8 @@ void video_info_show(AVI_INFO *aviinfo)
  */
 void video_bmsg_show(u8* name, u16 index, u16 total)
 {
+    #if(VIDEO_ONLY != 1)
+
     u8* buf;
     buf = mymalloc(SRAMIN, 100);  //申请100字节内存
     lcd_color_point = RED;
@@ -128,6 +138,8 @@ void video_bmsg_show(u8* name, u16 index, u16 total)
     sprintf((char*)buf, "索引:%d/%d", index, total);
     show_string(10, 30, lcddev.width-10, 16, buf, 16, 0);  //显示索引
     myfree(SRAMIN, buf);
+
+    #endif
 }
 
 /**
@@ -202,7 +214,7 @@ void video_play(void)
         strcat((char*)pname, (const char*)vfileinfo->fname);  //将文件名接在后面
         lcd_clear(WHITE);                         //先清屏
         video_bmsg_show((u8*)vfileinfo->fname, curindex+1, totavinum);  //显示名字,索引等信息
-        key = video_play_mjpeg(pname);            //播放这个音频文件
+        key = video_play_mjpeg(pname);            //播放这个视频文件
         if(key == KEY2_PRES)  //上一曲
         {
             if(curindex)
@@ -283,10 +295,10 @@ u8 video_play_mjpeg(u8 *pname)
             offset=avi_srarch_id(pbuf,AVI_VIDEO_BUF_SIZE,"movi");//寻找movi ID
             avi_get_streaminfo(pbuf+offset+4);  //获取流信息
             f_lseek(favi, offset+12);           //跳过标志ID,读地址偏移到流数据开始处
-            if(lcddev.height<=avix.Height)
-                res=mjpeg_init((lcddev.width-avix.Width)/2,(lcddev.height-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
+            if(lcddev.height <= avix.Height)
+                res = mjpeg_init((lcddev.width-avix.Width)/2,(lcddev.height-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
             else
-                res=mjpeg_init((lcddev.width-avix.Width)/2,110+(lcddev.height-110-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
+                res = mjpeg_init((lcddev.width-avix.Width)/2,(lcddev.height-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
             if(res)
             {
                 mjpeg_free();

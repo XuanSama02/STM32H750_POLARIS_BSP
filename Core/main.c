@@ -13,7 +13,6 @@ int main(void)
     sdram_init();                     //初始化SDRAM
     lcd_init();                       //初始化LCD
     w25qxx_init();                    //初始化W25Q256
-    usmart_dev.init(100);             //初始化USMART
     es8388_init();                    //ES8388初始化
     es8388_adda_config(1, 0);         //开启DAC关闭ADC
     es8388_output_config(1, 1);       //DAC选择通道输出
@@ -40,8 +39,8 @@ int main(void)
         delay_ms(200);
     }
 
-    //这里设置LTDC为横屏模式,此时LCD仍然为竖屏模式
-    ltdc_display_direction(1);  //LTDC横屏模式
+    //LDC横屏模式
+    lcd_display_direction(1);
 
     //打印信息
     show_string(60,  50, 200, 16, "北极星H750/F750开发板",  16, 0);

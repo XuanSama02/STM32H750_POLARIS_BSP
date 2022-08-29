@@ -43,12 +43,12 @@
                 "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Middlewares\\MJPEG",
                 "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Middlewares\\PICTURE",
                 "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Middlewares\\TEXT",
-                "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Middlewares\\USMART",
                 "C:\\Keil\\ARM\\ARMCC\\include",
                 "C:\\Keil\\ARM\\ARMCC\\include\\rw",
                 "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Drivers\\CMSIS\\STM32H7xx\\Source",
                 "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Drivers\\CMSIS\\STM32H7xx\\Startup",
-                "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Drivers\\STM32H7xx_HAL_Driver\\Src"
+                "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\Drivers\\STM32H7xx_HAL_Driver\\Src",
+                "d:\\000000000000\\0Code-MengXuan\\MDK-ARM\\STM32H750_POLARIS\\SCRIPT"
             ],
             "defines": [
                 "USE_HAL_DRIVER",
