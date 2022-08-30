@@ -17,10 +17,11 @@
 
 //LED÷ß≥÷∫Í∂®“Â:
 
-#define LCD_43_480_272_ENABLE   0  //4.3¥Á480*272 RGB∆¡
-#define LCD_70_800_480_ENABLE   0  //7¥Á800*480 RGB∆¡
-#define LCD_101_1280_800_ENABLE 0  //10.1¥Á1280*800 RGB∆¡
-#define LCD_VGA_ENBALE          0  //VGAœ‘ æ∆˜ƒ£øÈ
+#define LCD_43_480_272_ENABLE   0  //4.3¥Á480*272
+#define LCD_70_800_480_ENABLE   0  //7¥Á800*480
+#define LCD_70_1024_600_ENABLE  0  //7¥Á1024*600
+#define LCD_101_1280_800_ENABLE 0  //10.1¥Á1280*800
+#define LCD_VGA_ENBALE          0  //VGAœ‘ æ∆˜
 
 
 //LCDœ‘ æ≈‰÷√:

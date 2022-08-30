@@ -28,6 +28,8 @@
         "led.h": "c",
         "sdram.h": "c",
         "videoplay.h": "c",
-        "videoplayer.h": "c"
+        "videoplayer.h": "c",
+        "lcd_pictures.h": "c",
+        "mjpeg.h": "c"
     }
 }

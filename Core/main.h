@@ -21,6 +21,7 @@
 #include "key.h"
 #include "ltdc.h"
 #include "lcd.h"
+#include "lcd_image.h"
 #include "sdram.h"
 //#include "usmart.h"
 #include "pcf8574.h"

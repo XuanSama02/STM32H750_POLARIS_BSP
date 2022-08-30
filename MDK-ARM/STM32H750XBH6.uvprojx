@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32H750xx</Define>
               <Undefine></Undefine>
-              <IncludePath>..\App;..\Core;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\STM32H7xx\Include;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Drivers\SYSTEM\DELAY;..\Drivers\SYSTEM\SYS;..\Drivers\SYSTEM\USART;..\Drivers\BSP\H750XBH6;..\Drivers\BSP\24CXX;..\Drivers\BSP\AP3216C;..\Drivers\BSP\DCMI;..\Drivers\BSP\DHT11;..\Drivers\BSP\DS18B20;..\Drivers\BSP\ES8388;..\Drivers\BSP\IIC;..\Drivers\BSP\JPEGCODEC;..\Drivers\BSP\KEY;..\Drivers\BSP\LED;..\Drivers\BSP\LCD;..\Drivers\BSP\MPU;..\Drivers\BSP\NAND;..\Drivers\BSP\NRF24L01;..\Drivers\BSP\OV5640;..\Drivers\BSP\PCF8574;..\Drivers\BSP\RTC;..\Drivers\BSP\SAI;..\Drivers\BSP\SDMMC;..\Drivers\BSP\SDRAM;..\Drivers\BSP\SPI;..\Drivers\BSP\TIMER;..\Drivers\BSP\USART2;..\Drivers\BSP\W25QXX;..\Middlewares\AUDIOCODEC\wav;..\Middlewares\FATFS\exfuns;..\Middlewares\FATFS\source;..\Middlewares\MALLOC;..\Middlewares\MJPEG;..\Middlewares\PICTURE;..\Middlewares\TEXT</IncludePath>
+              <IncludePath>..\App;..\Core;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\STM32H7xx\Include;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Drivers\SYSTEM\DELAY;..\Drivers\SYSTEM\SYS;..\Drivers\SYSTEM\USART;..\Drivers\BSP\H750XBH6;..\Drivers\BSP\24CXX;..\Drivers\BSP\AP3216C;..\Drivers\BSP\DCMI;..\Drivers\BSP\DHT11;..\Drivers\BSP\DS18B20;..\Drivers\BSP\ES8388;..\Drivers\BSP\IIC;..\Drivers\BSP\JPEGCODEC;..\Drivers\BSP\KEY;..\Drivers\BSP\LED;..\Drivers\BSP\LCD;..\Drivers\BSP\MPU;..\Drivers\BSP\NAND;..\Drivers\BSP\NRF24L01;..\Drivers\BSP\OV5640;..\Drivers\BSP\PCF8574;..\Drivers\BSP\RTC;..\Drivers\BSP\SAI;..\Drivers\BSP\SDMMC;..\Drivers\BSP\SDRAM;..\Drivers\BSP\SPI;..\Drivers\BSP\TIMER;..\Drivers\BSP\USART2;..\Drivers\BSP\W25QXX;..\Middlewares\AUDIOCODEC\wav;..\Middlewares\FATFS\exfuns;..\Middlewares\FATFS\source;..\Middlewares\MALLOC;..\Middlewares\MJPEG;..\Middlewares\PICTURE;..\Middlewares\TEXT;..\Pictures</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +417,16 @@
               <FileName>videoplayer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\App\videoplayer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>User/Image</GroupName>
+          <Files>
+            <File>
+              <FileName>lcd_image.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Pictures\lcd_image.c</FilePath>
             </File>
           </Files>
         </Group>

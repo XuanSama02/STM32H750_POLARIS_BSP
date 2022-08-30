@@ -37,6 +37,7 @@ void ltdc_init(void)
         ltdc_clk_config(5, 160, 24);  //设置像素时钟 33M
         //其他参数待定
     }
+    #if(LCD_70_1024_600_ENABLE == 1)
     else if(lcd_id == 0X7016)  //7寸1024*600 RGB屏
     {
         lcdltdc.pwidth  = 1024;  //面板宽度,单位:像素
@@ -50,6 +51,7 @@ void ltdc_init(void)
         ltdc_clk_config(5, 160, 18);  //设置像素时钟 45Mhz
         //其他参数待定
     }
+    #endif
     #if(LCD_43_480_272_ENABLE == 1)
     else if(lcd_id == 0X4342)  //4.3寸480*272 RGB屏
     {

@@ -255,6 +255,49 @@ void lcd_draw_rectangle(u16 x1, u16 y1, u16 x2, u16 y2)
 }
 
 /**
+ * @brief 绘制单色图片
+ * 
+ * @param x      起始水平坐标
+ * @param y      起始垂直坐标
+ * @param width  图片宽度
+ * @param height 图片高度
+ * @param pIMAGE 图片首地址
+ */
+void lcd_draw_image(u16 x, u16 y, u16 width, u16 height, const u8 *pIMAGE)
+{
+    u8  code     = 0;
+    u16 x_addr   = x;
+    u16 counter0 = 0;
+    u16 counter1 = 0;
+    u16 counter2 = 0;
+
+    for(counter0=0; counter0<height; counter0++)
+    {
+        for(counter1=0; counter1<(float)width/8; counter1++)
+        {
+            code = *pIMAGE;
+            for(counter2=0; counter2<8; counter2++)
+            {
+                if(code & 0x01)
+                    lcd_draw_point_fast(x_addr, y, lcd_color_point);
+                else
+                    lcd_draw_point_fast(x_addr, y, lcd_color_back);
+                code >>= 1;
+                x_addr++;
+                //如果水平坐标到达字符宽度，进入下一行绘制
+                if((x_addr-x) == width)
+                {
+                    x_addr = x;
+                    y++;
+                    break;
+                }
+            }
+            pIMAGE++;
+        }
+    }
+}
+
+/**
  * @brief 在指定矩形区域填充颜色
  * 
  * @param sx 起点水平坐标

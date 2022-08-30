@@ -2,7 +2,7 @@
 Build target 'YMX'
 compiling main.c...
 linking...
-Program Size: Code=32004 RO-data=19700 RW-data=560 ZI-data=58772576  
+Program Size: Code=50946 RO-data=31650 RW-data=196 ZI-data=58772772  
 FromELF: creating hex file...
 ".\Objects\STM32H750XBH6.axf" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:08
+Build Time Elapsed:  00:00:09

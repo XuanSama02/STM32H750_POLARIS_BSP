@@ -72,6 +72,7 @@ void lcd_draw_point_fast(u16 x, u16 y, u32 color);        //画点(快速)
 void lcd_draw_circle(u16 x0, u16 y0, u8 r);               //画圆
 void lcd_draw_line(u16 x1, u16 y1, u16 x2, u16 y2);       //画线
 void lcd_draw_rectangle(u16 x1, u16 y1, u16 x2, u16 y2);  //画矩形
+void lcd_draw_image(u16 x, u16 y, u16 width, u16 height, const u8 *pIMAGE);  //绘制单色图片
 void lcd_fill(u16 sx, u16 sy, u16 ex, u16 ey, u32 color);         //填充单色
 void lcd_color_fill(u16 sx, u16 sy, u16 ex, u16 ey, u16 *color);  //填充指定颜色
 

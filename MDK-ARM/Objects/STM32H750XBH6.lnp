@@ -5,6 +5,7 @@
 ".\objects\stm32h7xx_hal_msp.o"
 ".\objects\audioplay.o"
 ".\objects\videoplayer.o"
+".\objects\lcd_image.o"
 ".\objects\h750xbh6.o"
 ".\objects\24cxx.o"
 ".\objects\es8388.o"

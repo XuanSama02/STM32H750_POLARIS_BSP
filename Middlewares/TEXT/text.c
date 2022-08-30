@@ -11,7 +11,7 @@
  * 
  * @param code 字符串的开始地址,GBK码
  * @param mat  数据存放地址 (size/8+((size%8)?1:0))*(size) bytes大小
- * @param size 字体大小
+ * @param size 字体大小(12/16/24/32)
  */
 void get_word_mat(unsigned char *code, unsigned char *mat, u8 size)
 {
@@ -58,7 +58,7 @@ void get_word_mat(unsigned char *code, unsigned char *mat, u8 size)
  * @param x    汉字水平坐标
  * @param y    汉字垂直坐标
  * @param font 汉字GBK码
- * @param size 字体大小
+ * @param size 字体大小(12/16/24/32)
  * @param mode 0:正常显示 1:叠加显示
  */
 void show_font(u16 x, u16 y, u8 *font, u8 size, u8 mode)
@@ -101,7 +101,7 @@ void show_font(u16 x, u16 y, u8 *font, u8 size, u8 mode)
  * @param width  区域宽度
  * @param height 区域高度
  * @param str    字符串
- * @param size   字体大小
+ * @param size   字体大小(12/16/24/32)
  * @param mode   0:非叠加方式 1:叠加方式
  */
 void show_string(u16 x, u16 y, u16 width, u16 height, u8*str, u8 size, u8 mode)
@@ -159,7 +159,7 @@ void show_string(u16 x, u16 y, u16 width, u16 height, u8*str, u8 size, u8 mode)
  * @param x    起点水平坐标
  * @param y    起点垂直坐标
  * @param str  字符串
- * @param size 字体大小
+ * @param size 字体大小(12/16/24/32)
  * @param len  指定要显示的宽度
  */
 void show_string_middle(u16 x, u16 y, u8*str, u8 size, u8 len)

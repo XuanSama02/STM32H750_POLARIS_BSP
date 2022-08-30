@@ -42,18 +42,29 @@ int main(void)
     //LDC横屏模式
     lcd_display_direction(1);
 
-    //打印信息
-    show_string(60,  50, 200, 16, "北极星H750/F750开发板",  16, 0);
-    show_string(60,  70, 200, 16, "视频播放器实验",         16, 0);
-    show_string(60,  90, 200, 16, "正点原子@ALIENTEK",      16, 0);
-    show_string(60, 110, 200, 16, "2019年5月16日",          16, 0);
-    show_string(60, 130, 200, 16, "KEY0:NEXT   KEY2:PREV", 16, 0);
-    show_string(60, 150, 200, 16, "KEY_UP:FF   KEY1:REW",  16, 0);
+    //显示CDTU校徽
+    lcd_color_point = BLUE;
+    lcd_draw_image(40, 90, 300, 297, Image_CDTU_300x297);
+
+    //显示展示信息
+    lcd_color_point = BLACK;
+    show_string(400, 180, 400, 32, "无人机全息投影展示系统", 32, 0);
+    show_string(478, 230, 400, 24, "飞行器控制与信息工程1班", 24, 0);
+    show_string(680, 260, 400, 24, "杨梦轩", 24, 0);
     delay_ms(1500);
+    while(key_scan(0) != WKUP_PRES)
+    {
+        lcd_color_point = RED;
+        show_string(315, 400, 300, 24, "长按WKUP键开始投影", 24, 0);
+        delay_ms(500);
+        lcd_color_point = WHITE;
+        show_string(315, 400, 300, 24, "长按WKUP键开始投影", 24, 0);
+        delay_ms(500);
+    }
 
     //初始化TIM3用于打印视频帧率
     tim3_init(10000-1, 20000-1);  //10Khz计数,1秒钟中断一次
-    delay_ms(1500);
+    delay_ms(500);
 
     //播放视频
     while(1)
