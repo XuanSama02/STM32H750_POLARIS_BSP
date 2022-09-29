@@ -14,8 +14,6 @@ int main(void)
     lcd_init();                       //初始化LCD
     w25qxx_init();                    //初始化W25Q256
     es8388_init();                    //ES8388初始化
-    es8388_adda_config(1, 0);         //开启DAC关闭ADC
-    es8388_output_config(1, 1);       //DAC选择通道输出
     es8388_headphone_vol_config(10);  //调节耳机音量
     es8388_speaker_vol_config(4);     //调节喇叭音量
     my_mem_init_all();                //初始化片上内存与板载内存

@@ -10,19 +10,21 @@
  * @brif:    北极星开发板软件I2C驱动
  * @version:
  * 2022/08/19: 实现了北极星开发板软件I2C驱动
+ * 
+ * 2022/09/06: 使用do while(0)重写宏定义
  */
 
 //IO方向设置
 
-#define SDA_IN()  {GPIOH->MODER &= ~(3<<(5*2)); GPIOH->MODER |= 0<<5*2;}  //PH5输入模式
-#define SDA_OUT() {GPIOH->MODER &= ~(3<<(5*2)); GPIOH->MODER |= 1<<5*2;}  //PH5输出模式
+#define SDA_IN()  do{ GPIOH->MODER &= ~(3<<(5*2)); GPIOH->MODER |= 0<<5*2; }while(0)  //PH5输入模式
+#define SDA_OUT() do{ GPIOH->MODER &= ~(3<<(5*2)); GPIOH->MODER |= 1<<5*2; }while(0)  //PH5输出模式
 
 //IO操作
 
-#define IIC_SCL(n)  (n ? HAL_GPIO_WritePin(GPIOH, GPIO_PIN_4, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOH, GPIO_PIN_4, GPIO_PIN_RESET))  //SCL
-#define IIC_SDA(n)  (n ? HAL_GPIO_WritePin(GPIOH, GPIO_PIN_5, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOH, GPIO_PIN_5, GPIO_PIN_RESET))  //SDA
+#define IIC_SCL(n)  do { n ? HAL_GPIO_WritePin(GPIOH, GPIO_PIN_4, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOH, GPIO_PIN_4, GPIO_PIN_RESET); }while(0)  //SCL
+#define IIC_SDA(n)  do { n ? HAL_GPIO_WritePin(GPIOH, GPIO_PIN_5, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOH, GPIO_PIN_5, GPIO_PIN_RESET); }while(0)  //SDA
 
-#define READ_SDA HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_5)  //输入SDA
+#define READ_SDA() HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_5)  //输入SDA
 
 //IIC所有操作函数
 

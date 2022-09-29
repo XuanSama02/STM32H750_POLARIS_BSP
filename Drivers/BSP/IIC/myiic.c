@@ -90,7 +90,7 @@ u8 i2c_read_byte(unsigned char ack)
         delay_us(2);
         IIC_SCL(1);
         receive <<= 1;
-        if(READ_SDA)
+        if(READ_SDA())
             receive++;
         delay_us(1);
     }
@@ -114,7 +114,7 @@ u8 i2c_wait_ack(void)
     delay_us(1);
     IIC_SCL(1);
     delay_us(1);
-    while(READ_SDA)
+    while(READ_SDA())
     {
         ucErrTime++;
         if(ucErrTime > 250)  //³¬Ê±

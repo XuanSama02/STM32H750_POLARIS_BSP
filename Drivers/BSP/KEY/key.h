@@ -10,6 +10,8 @@
  * @brif:    北极星开发板按键驱动
  * @version:
  * 2022/08/18: 实现了北极星开发板按键驱动
+ * 
+ * 2022/09/06: 优化宏定义,定义为函数样式
  */
 
 /*
@@ -36,10 +38,10 @@ VCC -> WKUP -> PA0
 #define KEY2_PRES 3  //KEY2按下返回值
 #define WKUP_PRES 4  //WKUP按下返回值
 
-#define KEY0_READ HAL_GPIO_ReadPin(KEY0_GPIO_PORT, KEY0_PIN)  //KEY0按键PH3
-#define KEY1_READ HAL_GPIO_ReadPin(KEY1_GPIO_PORT, KEY1_PIN)  //KEY1按键PH2
-#define KEY2_READ HAL_GPIO_ReadPin(KEY2_GPIO_PORT, KEY2_PIN)  //KEY2按键PC13
-#define WKUP_READ HAL_GPIO_ReadPin(WKUP_GPIO_PORT, WKUP_PIN)  //WKUP按键PA0
+#define KEY0_READ() HAL_GPIO_ReadPin(KEY0_GPIO_PORT, KEY0_PIN)  //KEY0按键PH3
+#define KEY1_READ() HAL_GPIO_ReadPin(KEY1_GPIO_PORT, KEY1_PIN)  //KEY1按键PH2
+#define KEY2_READ() HAL_GPIO_ReadPin(KEY2_GPIO_PORT, KEY2_PIN)  //KEY2按键PC13
+#define WKUP_READ() HAL_GPIO_ReadPin(WKUP_GPIO_PORT, WKUP_PIN)  //WKUP按键PA0
 
 void key_init(void);   //按键IO初始化函数
 u8 key_scan(u8 mode);  //按键扫描函数

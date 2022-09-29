@@ -10,6 +10,8 @@
  * @brif:    北极星开发板SAI驱动
  * @version:
  * 2022/08/18: 实现了北极星开发板SAI驱动
+ * 
+ * 2022/09/06: 删除未用到的SAIB
  */
 
 extern SAI_HandleTypeDef SAI1A_Handler;  //SAI1 Block A句柄

@@ -41,20 +41,20 @@ u8 key_scan(u8 mode)
     static u8 key_up = 1;  //按键松开标志
     if(mode == 1)          //支持连按
         key_up = 1;
-    if(key_up && (KEY0_READ==0 || KEY1_READ==0 || KEY2_READ==0 || WKUP_READ==1))  //任意按键按下
+    if(key_up && (KEY0_READ()==0 || KEY1_READ()==0 || KEY2_READ()==0 || WKUP_READ()==1))  //任意按键按下
     {
         delay_ms(10);
         key_up = 0;  //按键按下
-        if(KEY0_READ == 0)       //KEY0按下
-            return KEY0_PRES;    //返回KEY0值
-        else if(KEY1_READ == 0)  //KEY1按下
-            return KEY1_PRES;    //返回KEY1值
-        else if(KEY2_READ == 0)  //KEY2按下
-            return KEY2_PRES;    //返回KEY2值
-        else if(WKUP_READ == 1)  //WKUP按下
-            return WKUP_PRES;    //返回WKUP值
+        if(KEY0_READ() == 0)       //KEY0按下
+            return KEY0_PRES;      //返回KEY0值
+        else if(KEY1_READ() == 0)  //KEY1按下
+            return KEY1_PRES;      //返回KEY1值
+        else if(KEY2_READ() == 0)  //KEY2按下
+            return KEY2_PRES;      //返回KEY2值
+        else if(WKUP_READ() == 1)  //WKUP按下
+            return WKUP_PRES;      //返回WKUP值
     }
-    else if(KEY0_READ==1 && KEY1_READ==1 && KEY2_READ==1 && WKUP_READ==0)  //无按键按下
+    else if(KEY0_READ()==1 && KEY1_READ()==1 && KEY2_READ()==1 && WKUP_READ()==0)  //无按键按下
         key_up=1;  //按键松开
     return 0;      //无按键按下
 }

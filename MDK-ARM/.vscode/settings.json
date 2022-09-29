@@ -30,6 +30,17 @@
         "videoplay.h": "c",
         "videoplayer.h": "c",
         "lcd_pictures.h": "c",
-        "mjpeg.h": "c"
+        "mjpeg.h": "c",
+        "24cxx.h": "c",
+        "es8388.h": "c",
+        "myiic.h": "c",
+        "jpegcodec.h": "c",
+        "pcf8574.h": "c",
+        "sai.h": "c",
+        "sdmmc_sdcard.h": "c",
+        "spi.h": "c",
+        "timer.h": "c",
+        "w25qxx.h": "c",
+        "exfuns.h": "c"
     }
 }

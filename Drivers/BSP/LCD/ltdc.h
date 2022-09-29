@@ -33,7 +33,7 @@
 //LCD帧缓冲区首地址,这里定义在SDRAM里面,默认大小2MB
 #define LCD_FRAME_BUF_ADDR   0XC0000000  
 //LCD背光控制(PD13)
-#define LCD_LED(n)  (n ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET))
+#define LCD_LED(n)  do{ n ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET); }while(0)
 
 //LCD LTDC重要参数集
 typedef struct

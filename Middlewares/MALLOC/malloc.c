@@ -3,7 +3,7 @@
 //内存池(64Byte对齐)
 
 __align(64) u8 mem1base[MEM1_MAX_SIZE];                                  // (448KB/512KB) 内部SRAM内存池
-__align(64) u8 mem2base[MEM2_MAX_SIZE] __attribute__((at(0XC03E8000)));  // ( 60MB/ 64MB) 外部SDRAM内存池,前面4M固定分配给LTDC使用(0xC0100000 ~ 0XC03E8000)
+__align(64) u8 mem2base[MEM2_MAX_SIZE] __attribute__((at(0XC03E8000)));  // ( 60MB/ 64MB) 外部SDRAM内存池,前面4M固定分配给LTDC使用(0xC0000000 ~ 0XC03E8000)
 __align(64) u8 mem3base[MEM3_MAX_SIZE] __attribute__((at(0x30000000)));  // (240KB/256KB) 内部SRAM1+SRAM2内存池
 __align(64) u8 mem4base[MEM4_MAX_SIZE] __attribute__((at(0x38000000)));  // ( 60KB/ 64KB) 内部SRAM4内存池
 __align(64) u8 mem5base[MEM5_MAX_SIZE] __attribute__((at(0x20000000)));  // (120KB/128KB) 内部DTCM内存池

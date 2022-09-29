@@ -2,7 +2,6 @@
 #include "delay.h"
 
 SAI_HandleTypeDef SAI1A_Handler;       //SAI1 Block A句柄
-SAI_HandleTypeDef SAI1B_Handler;       //SAI1 Block B句柄
 DMA_HandleTypeDef SAI1_TXDMA_Handler;  //DMA发送句柄
 DMA_HandleTypeDef SAI1_RXDMA_Handler;  //DMA接收句柄
 
@@ -16,18 +15,6 @@ void saia_dma_enable(void)
     tempreg  = SAI1_Block_A->CR1;  //先读出以前的设置
     tempreg |= 1<<17;              //使能DMA
     SAI1_Block_A->CR1 = tempreg;   //写入CR1寄存器中
-}
-
-/**
- * @brief 开启SAIA的DMA功能
- * 
- */
-void SAIB_DMA_Enable(void)
-{
-    u32 tempreg = 0;
-    tempreg  = SAI1_Block_B->CR1;  //先读出以前的设置
-    tempreg |= 1<<17;              //使能DMA
-    SAI1_Block_B->CR1 = tempreg;   //写入CR1寄存器中
 }
 
 /**
@@ -65,44 +52,6 @@ void saia_init(u32 mode, u32 cpol, u32 datalen)
     //初始化SAI
     HAL_SAI_Init(&SAI1A_Handler);      //初始化SAIA
     __HAL_SAI_ENABLE(&SAI1A_Handler);  //使能SAIA
-}
-
-/**
- * @brief SAI Block B初始化, I2S, 飞利浦标准
- * 
- * @param mode    工作模式: 主发SAI_MODEMASTER_TX 主收SAI_MODEMASTER_RX 从发SAI_MODESLAVE_TX 从收SAI_MODESLAVE_RX
- * @param cpol    数据时钟: 下降沿SAI_CLOCKSTROBING_FALLINGEDGE 上升沿SAI_CLOCKSTROBING_RISINGEDGE
- * @param datalen 数据大小: SAI_DATASIZE_8/10/16/20/24/32
- */
-void SAIB_Init(u32 mode, u32 cpol, u32 datalen)
-{
-    HAL_SAI_DeInit(&SAI1B_Handler);                                     //复位SAIB
-    SAI1B_Handler.Instance            = SAI1_Block_B;                   //SAI1 Bock B
-    SAI1B_Handler.Init.AudioMode      = SAI_MODESLAVE_RX;               //设置SAI1工作模式
-    SAI1B_Handler.Init.Synchro        = SAI_SYNCHRONOUS;                //音频模块同步
-    SAI1B_Handler.Init.OutputDrive    = SAI_OUTPUTDRIVE_ENABLE;         //立即驱动音频模块输出
-    SAI1B_Handler.Init.NoDivider      = SAI_MASTERDIVIDER_ENABLE;       //使能主时钟分频器(MCKDIV)
-    SAI1B_Handler.Init.FIFOThreshold  = SAI_FIFOTHRESHOLD_1QF;          //设置FIFO阈值,1/4 FIFO
-    SAI1B_Handler.Init.MonoStereoMode = SAI_STEREOMODE;                 //立体声模式
-    SAI1B_Handler.Init.Protocol       = SAI_FREE_PROTOCOL;              //设置SAI1协议为:自由协议(支持I2S/LSB/MSB/TDM/PCM/DSP等协议)
-    SAI1B_Handler.Init.DataSize       = SAI_DATASIZE_16;                //设置数据大小
-    SAI1B_Handler.Init.FirstBit       = SAI_FIRSTBIT_MSB;               //数据MSB位优先
-    SAI1B_Handler.Init.ClockStrobing  = SAI_CLOCKSTROBING_FALLINGEDGE;  //数据在时钟的上升/下降沿选通
-    //帧设置
-    SAI1B_Handler.FrameInit.FrameLength       = 64;                             //设置帧长度为64,左通道32个SCK,右通道32个SCK.
-    SAI1B_Handler.FrameInit.ActiveFrameLength = 32;                             //设置帧同步有效电平长度,在I2S模式下=1/2帧长.
-    SAI1B_Handler.FrameInit.FSDefinition      = SAI_FS_CHANNEL_IDENTIFICATION;  //FS信号为SOF信号+通道识别信号
-    SAI1B_Handler.FrameInit.FSPolarity        = SAI_FS_ACTIVE_LOW;              //FS低电平有效(下降沿)
-    SAI1B_Handler.FrameInit.FSOffset          = SAI_FS_BEFOREFIRSTBIT;          //在slot0的第一位的前一位使能FS,以匹配飞利浦标准	
-    //SLOT设置
-    SAI1B_Handler.SlotInit.FirstBitOffset = 0;                                  //slot偏移(FBOFF)为0
-    SAI1B_Handler.SlotInit.SlotSize       = SAI_SLOTSIZE_32B;                   //slot大小为32位
-    SAI1B_Handler.SlotInit.SlotNumber     = 2;                                  //slot数为2个    
-    SAI1B_Handler.SlotInit.SlotActive     = SAI_SLOTACTIVE_0|SAI_SLOTACTIVE_1;  //使能slot0和slot1
-    //初始化SAIB
-    HAL_SAI_Init(&SAI1B_Handler);      //初始化SAIB
-    SAIB_DMA_Enable();                 //使能SAIB的DMA功能
-    __HAL_SAI_ENABLE(&SAI1B_Handler);  //使能SAIB 
 }
 
 /**

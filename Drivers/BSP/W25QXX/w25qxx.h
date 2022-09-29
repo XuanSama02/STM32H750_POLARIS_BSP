@@ -24,7 +24,7 @@
 extern u16 W25QXX_TYPE;  //定义W25QXX芯片型号		   
 
 //W25QXX的片选信号
-#define W25QXX_CS(n) (n ? HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET))
+#define W25QXX_CS(n) do{ n ? HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET) : HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET); }while(0)
 
 //W25x指令表
 

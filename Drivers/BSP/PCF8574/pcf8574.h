@@ -11,9 +11,11 @@
  * @brif:    北极星开发板PCF8574驱动
  * @version:
  * 2022/08/19: 实现了北极星开发板PCF8574驱动控制IO
+ * 
+ * 2022/09/06: 优化宏定义,改为函数形式
  */
 
-#define PCF8574_INT HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_10)  //PCF8574 INT引脚
+#define PCF8574_INT() HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_10)  //PCF8574 INT引脚
 
 #define PCF8574_ADDR  0X40  //PCF8574地址(左移了一位)
 

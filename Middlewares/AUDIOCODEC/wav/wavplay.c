@@ -247,7 +247,7 @@ u8 wav_play_song(u8* fname)
                         if(t == 20)
                         {
                             t = 0;
-                            LED0_Toggle;
+                            LED0_Toggle();
                         }
                         if((audiodev.status&0X01) == 0)
                             delay_ms(10);

@@ -58,7 +58,7 @@ u16 video_get_tnum(u8 *path)
             if(res!=FR_OK || tfileinfo->fname[0]==0)  //错误了/到末尾了,退出
                 break;
             res = f_typetell((u8*)tfileinfo->fname);
-            if((res&0XF0) == 0X60)  //取高四位,看看是不是视频文件
+            if((res&0XF0) == T_AVI)  //取高四位,看看是不是AVI视频文件
             {
                 rval++;  //有效文件数增加1
             }
@@ -160,28 +160,22 @@ void video_play(void)
 
     while(f_opendir(&vdir, "0:/VIDEO"))  //打开视频文件夹
     {
-        show_string(60, 190, 240, 16, "VIDEO文件夹错误!", 16, 0);
-        delay_ms(200);
-        lcd_fill(60, 190, 240, 206, WHITE);  //清除显示
-        delay_ms(200);
+        printf("视频文件夹出错,视频文件目录:SD/VIDEO\r\n");
+        delay_ms(1000);
     }
     totavinum = video_get_tnum("0:/VIDEO");  //得到总有效文件数
     while(totavinum == NULL)  //视频文件总数为0
     {
-        show_string(60, 190, 240, 16, "没有视频文件!", 16, 0);
-        delay_ms(200);
-        lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
-        delay_ms(200);
+        printf("SD/VIDEO目录下没有视频文件\r\n");
+        delay_ms(1000);
     }
     vfileinfo  = (FILINFO*)mymalloc(SRAMIN, sizeof(FILINFO));  //为长文件缓存区分配内存
     pname      = mymalloc(SRAMIN, 2*FF_MAX_LFN+1);             //为带路径的文件名分配内存
     voffsettbl = mymalloc(SRAMIN, 4*totavinum);                //申请4*totavinum个字节的内存,用于存放视频文件索引
     while(vfileinfo==NULL || pname==NULL || voffsettbl==NULL)  //内存分配出错
     {
-        show_string(60, 190, 240, 16, "内存分配失败!", 16, 0);
-        delay_ms(200);
-        lcd_fill(60, 190, 240, 146, WHITE);  //清除显示
-        delay_ms(200);
+        printf("视频文件内存分配出错\r\n");
+        delay_ms(1000);
     }
     //记录索引
     res = f_opendir(&vdir, "0:/VIDEO");  //打开目录
@@ -195,7 +189,7 @@ void video_play(void)
             if(res!=FR_OK || vfileinfo->fname[0]==0)  //错误了/到末尾了,退出
                 break;
             res = f_typetell((u8*)vfileinfo->fname);
-            if((res&0XF0) == 0X60)  //取高四位,看看是不是音乐文件
+            if((res&0XF0) == T_AVI)  //取高四位,看看是不是AVI视频文件
             {
                 voffsettbl[curindex] = temp;  //记录索引
                 curindex++;
@@ -213,7 +207,9 @@ void video_play(void)
         strcpy((char*)pname, "0:/VIDEO/");        //复制路径(目录)
         strcat((char*)pname, (const char*)vfileinfo->fname);  //将文件名接在后面
         lcd_clear(WHITE);                         //先清屏
+#if(VIDEO_ONLY != 1)
         video_bmsg_show((u8*)vfileinfo->fname, curindex+1, totavinum);  //显示名字,索引等信息
+#endif
         key = video_play_mjpeg(pname);            //播放这个视频文件
         if(key == KEY2_PRES)  //上一曲
         {
@@ -292,13 +288,10 @@ u8 video_play_mjpeg(u8 *pname)
             }
             video_info_show(&avix);
             tim6_init(avix.SecPerFrame/100-1, 20000-1);   //10Khz计数频率,加1是100us
-            offset=avi_srarch_id(pbuf,AVI_VIDEO_BUF_SIZE,"movi");//寻找movi ID
+            offset = avi_srarch_id(pbuf, AVI_VIDEO_BUF_SIZE, "movi");  //寻找movi ID
             avi_get_streaminfo(pbuf+offset+4);  //获取流信息
             f_lseek(favi, offset+12);           //跳过标志ID,读地址偏移到流数据开始处
-            if(lcddev.height <= avix.Height)
-                res = mjpeg_init((lcddev.width-avix.Width)/2,(lcddev.height-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
-            else
-                res = mjpeg_init((lcddev.width-avix.Width)/2,(lcddev.height-avix.Height)/2,avix.Width,avix.Height);  //JPG解码初始化
+            res = mjpeg_init((lcddev.width-avix.Width)/2, (lcddev.height-avix.Height)/2, avix.Width, avix.Height);  //JPG解码初始化
             if(res)
             {
                 mjpeg_free();
